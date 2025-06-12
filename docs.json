@@ -11,6 +11,17 @@
   "navigation": {
     "tabs": [
       {
+        "tab": "Overview",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "index"
+            ]
+          }
+        ]
+      },
+      {
         "tab": "LilWorlds",
         "groups": [
           {
@@ -23,107 +34,23 @@
             ]
           },
           {
-            "group": "Core Features",
+            "group": "World Management",
             "pages": [
               "lilworlds/world-management",
-              "lilworlds/world-creation",
               "lilworlds/world-deletion",
-              "lilworlds/world-cloning",
-              "lilworlds/world-importing"
-            ]
-          },
-          {
-            "group": "Advanced Features",
-            "pages": [
-              "lilworlds/custom-generators",
-              "lilworlds/inventory-separation",
-              "lilworlds/security-features",
-              "lilworlds/performance"
+              "lilworlds/custom-generators"
             ]
           },
           {
             "group": "Commands",
             "pages": [
               "lilworlds/commands/world-commands",
-              "lilworlds/commands/admin-commands",
-              "lilworlds/commands/permissions"
-            ]
-          },
-          {
-            "group": "Developer Guide",
-            "pages": [
-              "lilworlds/api/overview",
-              "lilworlds/api/world-manager",
-              "lilworlds/api/events",
-              "lilworlds/api/integrations"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "Guides",
-        "groups": [
-          {
-            "group": "Get Started",
-            "pages": [
-              "index",
-              "quickstart",
-              "development"
-            ]
-          },
-          {
-            "group": "Essentials",
-            "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/settings",
-              "essentials/navigation",
-              "essentials/reusable-snippets"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "API Reference",
-        "groups": [
-          {
-            "group": "API Documentation",
-            "pages": [
-              "api-reference/introduction"
-            ]
-          },
-          {
-            "group": "Endpoint Examples",
-            "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "lilworlds/commands/admin-commands"
             ]
           }
         ]
       }
-    ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Community",
-          "href": "https://mintlify.com/community",
-          "icon": "slack"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
-        }
-      ]
-    }
+    ]
   },
   "logo": {
     "light": "/logo/light.svg",
