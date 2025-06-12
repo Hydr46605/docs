@@ -1,71 +1,198 @@
 ---
-title: Introduction
-description: "Welcome to the home of your new documentation"
+title: 'LilWorlds Documentation'
+description: 'Comprehensive guide for the LilWorlds Minecraft plugin'
 ---
 
 <img
   className="block dark:hidden"
   src="/images/hero-light.png"
-  alt="Hero Light"
+  alt="LilWorlds Documentation"
 />
 <img
   className="hidden dark:block"
   src="/images/hero-dark.png"
-  alt="Hero Dark"
+  alt="LilWorlds Documentation"
 />
 
-## Setting up
+# Welcome to LilWorlds
 
-The first step to world-class documentation is setting up your editing environments.
-
-<CardGroup cols={2}>
-  <Card
-    title="Edit Your Docs"
-    icon="pen-to-square"
-    href="https://mintlify.com/docs/quickstart"
-  >
-    Get your docs set up locally for easy development
-  </Card>
-  <Card
-    title="Preview Changes"
-    icon="image"
-    href="https://mintlify.com/docs/development"
-  >
-    Preview your changes before you push to make sure they're perfect
-  </Card>
-</CardGroup>
-
-## Make it yours
-
-Update your docs to your brand and add valuable content for the best user conversion.
+**LilWorlds** is a performant, modular world management plugin for Minecraft servers. Designed as a modern alternative to Multiverse-Core, LilWorlds focuses on performance, organization, and modularity.
 
 <CardGroup cols={2}>
   <Card
-    title="Customize Style"
-    icon="palette"
-    href="https://mintlify.com/docs/settings/global"
+    title="🚀 Get Started"
+    icon="play"
+    href="/installation"
   >
-    Customize your docs to your company's colors and brands
+    Install LilWorlds and create your first world in minutes
   </Card>
   <Card
-    title="Reference APIs"
-    icon="code"
-    href="https://mintlify.com/docs/api-playground/openapi"
+    title="📖 Quick Start Guide"
+    icon="book-open"
+    href="/quick-start"
   >
-    Automatically generate endpoints from an OpenAPI spec
+    Learn the essential commands and workflows
   </Card>
   <Card
-    title="Add Components"
-    icon="screwdriver-wrench"
-    href="https://mintlify.com/docs/content/components/accordions"
+    title="⚙️ Configuration"
+    icon="gear"
+    href="/configuration"
   >
-    Build interactive features and designs to guide your users
+    Customize LilWorlds for your server's needs
   </Card>
   <Card
-    title="Get Inspiration"
-    icon="stars"
-    href="https://mintlify.com/customers"
+    title="🌍 World Management"
+    icon="globe"
+    href="/world-management"
   >
-    Check out our showcase of our favorite documentation
+    Master advanced world management techniques
   </Card>
 </CardGroup>
+
+## Key Features
+
+<AccordionGroup>
+  <Accordion title="🌍 Advanced World Management" icon="globe">
+    - Create, clone, import, and delete worlds with ease
+    - Support for all Minecraft dimensions (Overworld, Nether, End)
+    - Enhanced world deletion with comprehensive configuration purging
+    - Efficient world loading and unloading with memory optimization
+  </Accordion>
+  
+  <Accordion title="⚡ Performance Optimized" icon="bolt">
+    - Asynchronous world operations to prevent server lag
+    - Rate limiting and security features
+    - Efficient memory management and resource optimization
+    - Minimal server impact with smart loading strategies
+  </Accordion>
+  
+  <Accordion title="🔧 Custom Generators" icon="wand-magic-sparkles">
+    - Built-in VoidGenerator for creative and minigame worlds
+    - YAML-based custom generator system
+    - Support for FLAT, VOID, NORMAL, and AMPLIFIED generation
+    - No Java coding required for custom world types
+  </Accordion>
+  
+  <Accordion title="🎒 Inventory Separation" icon="backpack">
+    - Separate inventories per world or world groups
+    - Configurable inventory management system
+    - Seamless player experience across worlds
+    - Support for ender chests, experience, and gamemode separation
+  </Accordion>
+  
+  <Accordion title="🛡️ Security Features" icon="shield">
+    - Input validation and sanitization
+    - Rate limiting for operations to prevent abuse
+    - Permission-based access control
+    - Comprehensive security logging and monitoring
+  </Accordion>
+</AccordionGroup>
+
+## Version Information
+
+<Info>
+**Current Version:** 1.2.0
+
+**Minecraft Compatibility:** 1.16 - 1.21.5
+
+**Server Software:** Spigot, Paper, Purpur (any Spigot-based)
+
+**Java Version:** 8+ (Java 17+ recommended)
+</Info>
+
+## Quick Command Overview
+
+LilWorlds provides intuitive commands for all world management tasks:
+
+### World Management Commands (`/world` or `/w`)
+
+```bash
+# Create worlds
+/world create myworld                    # Basic world creation
+/world create void_world NORMAL -g VoidGenerator  # With custom generator
+
+# Manage worlds
+/world list                             # List all worlds
+/world info myworld                     # Detailed world information
+/world load myworld                     # Load a world
+/world unload myworld                   # Unload a world
+
+# Clone and import
+/world clone source target              # Clone existing world
+/world import existing_world            # Import external world
+
+# Safe deletion with configuration purging
+/world remove myworld                   # Delete with confirmation
+```
+
+### Plugin Administration (`/worlds`)
+
+```bash
+/worlds reload                          # Reload all configurations
+/worlds reload generators               # Reload custom generators
+/worlds cleanup --orphaned              # Clean up orphaned files
+```
+
+## What's New in v1.2
+
+<CardGroup cols={2}>
+  <Card title="Enhanced World Deletion" icon="trash">
+    **Configuration Purging**
+    
+    Complete removal of world references from all config files
+  </Card>
+  <Card title="Improved Security" icon="shield">
+    **Advanced Rate Limiting**
+    
+    Enhanced security features and operation monitoring
+  </Card>
+  <Card title="Better Performance" icon="gauge-high">
+    **Memory Optimization**
+    
+    Improved memory management and async operations
+  </Card>
+  <Card title="Custom Generators" icon="wand-magic-sparkles">
+    **YAML-Based System**
+    
+    Create custom world generators without Java coding
+  </Card>
+</CardGroup>
+
+## Getting Help
+
+<CardGroup cols={2}>
+  <Card
+    title="📥 Download"
+    icon="download"
+    href="https://github.com/CarmineArcangelo/LilWorlds/releases"
+  >
+    Get the latest version from GitHub releases
+  </Card>
+  <Card
+    title="🐛 Report Issues"
+    icon="bug"
+    href="https://github.com/CarmineArcangelo/LilWorlds/issues"
+  >
+    Found a bug? Report it on our GitHub issues page
+  </Card>
+  <Card
+    title="💬 Community"
+    icon="users"
+    href="https://github.com/CarmineArcangelo/LilWorlds/discussions"
+  >
+    Join discussions and get community support
+  </Card>
+  <Card
+    title="📚 Full Documentation"
+    icon="book"
+    href="/installation"
+  >
+    Explore the complete documentation
+  </Card>
+</CardGroup>
+
+---
+
+<Note>
+**Ready to get started?** Head over to the [Installation Guide](/installation) to set up LilWorlds on your server, or jump straight to the [Quick Start Guide](/quick-start) if you're ready to start managing worlds!
+</Note>
