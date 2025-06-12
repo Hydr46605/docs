@@ -73,8 +73,7 @@
           {
             "group": "Advanced",
             "pages": [
-              "lilchunks/troubleshooting",
-              "lilchunks/api"
+              "lilchunks/troubleshooting"
             ]
           }
         ]
