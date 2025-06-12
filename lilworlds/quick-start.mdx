@@ -1,0 +1,399 @@
+---
+title: 'Quick Start Guide'
+description: 'Get started with LilWorlds in minutes'
+icon: 'play'
+---
+
+## Your First World
+
+Let's create your first world with LilWorlds! This guide will walk you through the essential commands and workflows.
+
+<Info>
+**Prerequisites:** Make sure you have [installed LilWorlds](/lilworlds/installation) and have the necessary permissions.
+</Info>
+
+## Basic Commands Overview
+
+LilWorlds uses two main command categories:
+
+<CardGroup cols={2}>
+  <Card title="/world (or /w)" icon="globe">
+    **World Management**
+    
+    Create, delete, clone, and manage individual worlds
+  </Card>
+  <Card title="/worlds" icon="gear">
+    **Plugin Administration**
+    
+    Reload configs, manage plugin settings
+  </Card>
+</CardGroup>
+
+## Creating Your First World
+
+### Simple World Creation
+
+The easiest way to create a world is with the basic create command:
+
+```bash
+/world create myworld
+```
+
+This creates a normal overworld with default settings.
+
+### Advanced World Creation
+
+For more control, use additional parameters:
+
+```bash
+# Create a nether world
+/world create nether_world NETHER
+
+# Create with custom generator
+/world create void_world NORMAL -g VoidGenerator
+
+# Create with custom seed
+/world create seed_world NORMAL -s 12345
+
+# Combine multiple options
+/world create custom_world NORMAL -g VoidGenerator -s 67890
+```
+
+<Accordion title="Available World Types">
+- **NORMAL** - Standard overworld
+- **NETHER** - Nether dimension
+- **THE_END** - End dimension
+</Accordion>
+
+## Managing Worlds
+
+### Listing Worlds
+
+See all your worlds with detailed information:
+
+```bash
+/world list
+```
+
+<Accordion title="Example Output">
+```
+=== World List ===
+
+Loaded Worlds (3):
+● world [NORMAL] Players: 5 Chunks: 234 Weather: ☀ Time: Day
+● nether_world [NETHER] Players: 1 Chunks: 45 Weather: ☀ Time: Day
+● void_world [NORMAL] Players: 0 Chunks: 12 Weather: ☀ Time: Morning
+
+Unloaded Worlds (1):
+● old_world [UNLOADED]
+
+Total: 4 worlds
+```
+</Accordion>
+
+### World Information
+
+Get detailed information about a specific world:
+
+```bash
+/world info myworld
+```
+
+### Loading and Unloading
+
+```bash
+# Load a specific world
+/world load myworld
+
+# Load all configured worlds
+/world load
+
+# Unload a specific world
+/world unload myworld
+
+# Unload all worlds (with confirmation)
+/world unload
+```
+
+## Cloning Worlds
+
+Create exact copies of existing worlds:
+
+```bash
+# Clone a world
+/world clone source_world target_world
+
+# Example: Create a backup
+/world clone spawn spawn_backup
+```
+
+<Warning>
+**Important:** Players will be moved out of the source world during cloning to prevent data corruption.
+</Warning>
+
+## Importing Existing Worlds
+
+Import worlds that already exist in your server folder:
+
+```bash
+# Import with default settings
+/world import existing_world
+
+# Import with specific dimension
+/world import existing_world NETHER
+
+# Import with custom generator
+/world import existing_world NORMAL -g CustomGenerator
+```
+
+## World Deletion
+
+<Danger>
+**Warning:** World deletion is permanent and cannot be undone. Always create backups first!
+</Danger>
+
+LilWorlds provides safe world deletion with confirmation:
+
+```bash
+# Delete a world (requires confirmation)
+/world remove myworld
+
+# Alternative command
+/world delete myworld
+```
+
+The deletion process:
+1. **Confirmation required** - Type the command again to confirm
+2. **Player evacuation** - All players moved to spawn
+3. **World unloading** - World safely unloaded
+4. **File deletion** - World files permanently removed
+5. **Configuration cleanup** - All references removed from configs
+
+## Spawn Management
+
+### Setting World Spawn
+
+Set the spawn point for a specific world:
+
+```bash
+# Set spawn at your current location
+/world setspawn
+
+# This affects the world you're currently in
+```
+
+### Universal Spawn
+
+Set a universal spawn point that applies to all worlds:
+
+```bash
+/world setuniversalspawn
+```
+
+## Configuration Commands
+
+### World-Specific Configuration
+
+Modify settings for individual worlds:
+
+```bash
+# Disable a boolean option
+/world config disable pvp
+
+# Set a string value
+/world config set difficulty hard
+
+# Set numeric values
+/world config set spawn-radius 16
+```
+
+### Plugin Configuration
+
+Manage plugin-wide settings:
+
+```bash
+# Reload all configurations
+/worlds reload
+
+# Reload specific components
+/worlds reload config
+/worlds reload generators
+/worlds reload worlds
+
+# Quick reload alias
+/worlds rl
+```
+
+## Working with Custom Generators
+
+### Built-in Generators
+
+LilWorlds comes with a built-in **VoidGenerator**:
+
+```bash
+# Create a void world
+/world create void_world NORMAL -g VoidGenerator
+```
+
+### Adding Custom Generators
+
+1. Create a generator file in `plugins/LilWorlds/generators/`
+2. Configure the generator settings
+3. Reload generators: `/worlds reload generators`
+4. Use in world creation: `/world create myworld NORMAL -g MyGenerator`
+
+<Accordion title="Example Generator Configuration">
+```yaml
+# plugins/LilWorlds/generators/MyGenerator.yml
+name: "MyGenerator"
+type: "FLAT"
+settings:
+  layers:
+    - "minecraft:bedrock"
+    - "minecraft:stone,10"
+    - "minecraft:grass_block"
+  structures: false
+  decorations: false
+```
+</Accordion>
+
+## Inventory Separation
+
+LilWorlds supports separate inventories per world or world groups:
+
+### Enable Inventory Separation
+
+```bash
+# Enable for all worlds
+/worlds config enable inventory-separation
+
+# Configure world groups in config.yml
+```
+
+### World Groups
+
+Group worlds to share inventories:
+
+```yaml
+# config.yml
+inventory-groups:
+  survival:
+    - world
+    - world_nether
+    - world_the_end
+  creative:
+    - creative_world
+    - build_world
+```
+
+## Common Workflows
+
+### Setting Up a Multi-World Server
+
+<Steps>
+  <Step title="Create Main Worlds">
+    ```bash
+    /world create survival NORMAL
+    /world create survival_nether NETHER
+    /world create survival_the_end THE_END
+    /world create creative NORMAL
+    ```
+  </Step>
+  
+  <Step title="Configure Inventory Groups">
+    Edit `config.yml` to group related worlds
+  </Step>
+  
+  <Step title="Set Spawn Points">
+    ```bash
+    # Go to each world and set spawn
+    /world setspawn
+    ```
+  </Step>
+  
+  <Step title="Configure Permissions">
+    Set up appropriate permissions for different player groups
+  </Step>
+</Steps>
+
+### Creating a Backup System
+
+<Steps>
+  <Step title="Create Backup Worlds">
+    ```bash
+    /world clone survival survival_backup_$(date)
+    /world clone creative creative_backup_$(date)
+    ```
+  </Step>
+  
+  <Step title="Unload Backups">
+    ```bash
+    /world unload survival_backup_$(date)
+    /world unload creative_backup_$(date)
+    ```
+  </Step>
+  
+  <Step title="Automate with Scripts">
+    Create server scripts to automate regular backups
+  </Step>
+</Steps>
+
+## Tips and Best Practices
+
+<AccordionGroup>
+  <Accordion title="Performance Tips">
+    - Use `/world unload` for unused worlds to save memory
+    - Enable async world creation in config
+    - Limit the number of loaded worlds based on your server resources
+    - Use void generators for creative/testing worlds
+  </Accordion>
+  
+  <Accordion title="Security Best Practices">
+    - Regularly backup important worlds before major changes
+    - Use rate limiting to prevent abuse
+    - Set appropriate permissions for different user groups
+    - Monitor world creation/deletion through logs
+  </Accordion>
+  
+  <Accordion title="Organization Tips">
+    - Use consistent naming conventions for worlds
+    - Group related worlds with inventory separation
+    - Document your world purposes and configurations
+    - Keep generators organized in the generators folder
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+Now that you know the basics, explore more advanced features:
+
+<CardGroup cols={2}>
+  <Card
+    title="World Management"
+    icon="globe"
+    href="/lilworlds/world-management"
+  >
+    Deep dive into advanced world management features
+  </Card>
+  <Card
+    title="Custom Generators"
+    icon="wand-magic-sparkles"
+    href="/lilworlds/custom-generators"
+  >
+    Learn to create and configure custom world generators
+  </Card>
+  <Card
+    title="Security Features"
+    icon="shield"
+    href="/lilworlds/security-features"
+  >
+    Understand rate limiting and security measures
+  </Card>
+  <Card
+    title="Commands Reference"
+    icon="terminal"
+    href="/lilworlds/commands/world-commands"
+  >
+    Complete command reference and examples
+  </Card>
+</CardGroup>

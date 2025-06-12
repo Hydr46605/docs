@@ -1,0 +1,656 @@
+---
+title: 'World Commands'
+description: 'Complete reference for all world management commands'
+icon: 'terminal'
+---
+
+## Command Overview
+
+LilWorlds provides comprehensive world management through the `/world` (or `/w`) command system. All commands support tab completion and include detailed help information.
+
+<Info>
+**Aliases:** You can use `/w` as a shortcut for `/world` in all commands.
+</Info>
+
+## Basic Commands
+
+### World Information
+
+<CodeGroup>
+```bash Info
+# Get detailed information about a world
+/world info <world_name>
+/w info spawn
+
+# Get info about current world
+/world info
+```
+
+```bash List
+# List all worlds with status
+/world list
+/w list
+
+# List only loaded worlds
+/world list --loaded
+
+# List only unloaded worlds
+/world list --unloaded
+```
+</CodeGroup>
+
+<Accordion title="Example List Output">
+```
+=== World List ===
+
+Loaded Worlds (3):
+● world [NORMAL] Players: 5 Chunks: 234 Weather: ☀ Time: Day
+● nether_world [NETHER] Players: 1 Chunks: 45 Weather: ☀ Time: Day  
+● creative_world [NORMAL] Players: 2 Chunks: 67 Weather: ☀ Time: Morning
+
+Unloaded Worlds (2):
+● old_world [UNLOADED]
+● backup_world [UNLOADED]
+
+Total: 5 worlds
+```
+</Accordion>
+
+## World Creation
+
+### Basic Creation
+
+```bash
+# Create a simple world
+/world create <world_name>
+/w create myworld
+
+# Create with specific environment
+/world create <world_name> <environment>
+/w create nether_world NETHER
+/w create end_world THE_END
+```
+
+### Advanced Creation
+
+```bash
+# Create with custom generator
+/world create <world_name> <environment> -g <generator>
+/w create void_world NORMAL -g VoidGenerator
+
+# Create with seed
+/world create <world_name> <environment> -s <seed>
+/w create seeded_world NORMAL -s 12345
+
+# Create with multiple options
+/world create <world_name> <environment> -g <generator> -s <seed>
+/w create custom_world NORMAL -g MyGenerator -s 67890
+
+# Disable structure generation
+/world create <world_name> <environment> --no-structures
+/w create flat_world NORMAL -g FlatGenerator --no-structures
+```
+
+### Environment Types
+
+| Environment | Description | Example |
+|-------------|-------------|---------|
+| `NORMAL` | Standard overworld | `/w create overworld NORMAL` |
+| `NETHER` | Nether dimension | `/w create nether NETHER` |
+| `THE_END` | End dimension | `/w create end THE_END` |
+
+### Generator Options
+
+```bash
+# Built-in generators
+/w create void_world NORMAL -g VoidGenerator
+
+# Custom generators (from generators/ folder)
+/w create custom_world NORMAL -g MyCustomGenerator
+
+# Plugin generators (if available)
+/w create terra_world NORMAL -g Terra:OVERWORLD
+```
+
+## World Loading and Unloading
+
+### Loading Worlds
+
+```bash
+# Load a specific world
+/world load <world_name>
+/w load myworld
+
+# Load all configured worlds
+/world load
+/w load
+
+# Force load (ignore errors)
+/world load <world_name> --force
+/w load problematic_world --force
+```
+
+### Unloading Worlds
+
+```bash
+# Unload a specific world
+/world unload <world_name>
+/w unload myworld
+
+# Unload all worlds (requires confirmation)
+/world unload
+/w unload
+
+# Force unload (move players immediately)
+/world unload <world_name> --force
+/w unload myworld --force
+
+# Unload empty worlds only
+/world unload --empty
+/w unload --empty
+```
+
+<Warning>
+**Player Safety:** Players in unloaded worlds are automatically moved to the spawn world.
+</Warning>
+
+## World Cloning
+
+### Basic Cloning
+
+```bash
+# Clone a world
+/world clone <source_world> <target_world>
+/w clone spawn spawn_backup
+
+# Clone with different environment
+/world clone <source> <target> <environment>
+/w clone overworld nether_copy NETHER
+```
+
+### Advanced Cloning
+
+```bash
+# Clone and unload source
+/world clone <source> <target> --unload-source
+/w clone old_world new_world --unload-source
+
+# Clone with custom settings
+/world clone <source> <target> --generator <generator>
+/w clone creative creative_void -g VoidGenerator
+```
+
+<Info>
+**Cloning Process:** Players are temporarily moved out of the source world during cloning to prevent data corruption.
+</Info>
+
+## World Importing
+
+### Basic Import
+
+```bash
+# Import existing world folder
+/world import <world_name>
+/w import existing_world
+
+# Import with specific environment
+/world import <world_name> <environment>
+/w import nether_world NETHER
+```
+
+### Advanced Import
+
+```bash
+# Import with custom generator
+/world import <world_name> <environment> -g <generator>
+/w import custom_world NORMAL -g MyGenerator
+
+# Import and configure
+/world import <world_name> --configure
+/w import new_world --configure
+
+# Bulk import
+/world import --scan
+/w import --pattern "world_*"
+```
+
+## World Deletion
+
+<Danger>
+**Warning:** World deletion is permanent and includes comprehensive configuration purging!
+</Danger>
+
+### Safe Deletion
+
+```bash
+# Delete with confirmation required
+/world remove <world_name>
+/w remove old_world
+
+# Alternative command
+/world delete <world_name>
+/w delete old_world
+```
+
+### Advanced Deletion
+
+```bash
+# Force delete (admin only, no confirmation)
+/world remove <world_name> --force
+/w remove old_world --force
+
+# Delete with backup first
+/world remove <world_name> --backup
+/w remove old_world --backup
+
+# Delete multiple worlds
+/world remove <world1> <world2> <world3>
+/w remove temp1 temp2 temp3
+
+# Bulk deletion by pattern (admin only)
+/world remove --pattern "temp_*"
+/w remove --pattern "backup_*"
+```
+
+### What Gets Deleted
+
+The deletion process removes:
+- ✗ All world files and folders
+- ✗ All configuration entries (config.yml, worlds.yml)
+- ✗ Inventory group memberships
+- ✗ World-specific settings and data
+
+## Spawn Management
+
+### World Spawn
+
+```bash
+# Set spawn for current world at your location
+/world setspawn
+/w setspawn
+
+# Set spawn for specific world
+/world setspawn <world_name>
+/w setspawn myworld
+
+# Set spawn at specific coordinates
+/world setspawn <world_name> <x> <y> <z>
+/w setspawn myworld 100 64 200
+```
+
+### Universal Spawn
+
+```bash
+# Set universal spawn (applies to all worlds)
+/world setuniversalspawn
+/w setuniversalspawn
+
+# Set universal spawn at coordinates
+/world setuniversalspawn <x> <y> <z>
+/w setuniversalspawn 0 64 0
+```
+
+## World Configuration
+
+### View Configuration
+
+```bash
+# List all world settings
+/world config list
+/w config list
+
+# View specific setting
+/world config get <key>
+/w config get difficulty
+```
+
+### Modify Configuration
+
+```bash
+# Set string values
+/world config set <key> <value>
+/w config set difficulty hard
+/w config set generator VoidGenerator
+
+# Enable boolean options
+/world config enable <option>
+/w config enable pvp
+/w config enable keepInventory
+
+# Disable boolean options
+/world config disable <option>
+/w config disable pvp
+/w config disable doDaylightCycle
+
+# Set numeric values
+/world config set <key> <number>
+/w config set spawn-radius 16
+/w config set border-size 1000
+```
+
+### Common Configuration Options
+
+| Setting | Type | Example | Description |
+|---------|------|---------|-------------|
+| `difficulty` | String | `easy`, `normal`, `hard` | World difficulty |
+| `pvp` | Boolean | `true`, `false` | Player vs Player combat |
+| `spawn-animals` | Boolean | `true`, `false` | Animal spawning |
+| `spawn-monsters` | Boolean | `true`, `false` | Monster spawning |
+| `keepInventory` | Boolean | `true`, `false` | Keep items on death |
+| `doDaylightCycle` | Boolean | `true`, `false` | Day/night cycle |
+| `spawn-radius` | Number | `16` | Spawn protection radius |
+
+## Teleportation
+
+### Basic Teleportation
+
+```bash
+# Teleport to a world's spawn
+/world tp <world_name>
+/w tp creative_world
+
+# Teleport another player
+/world tp <player> <world_name>
+/w tp Steve creative_world
+
+# Teleport to specific coordinates
+/world tp <world_name> <x> <y> <z>
+/w tp myworld 100 64 200
+```
+
+### Advanced Teleportation
+
+```bash
+# Teleport with specific facing direction
+/world tp <world_name> <x> <y> <z> <yaw> <pitch>
+/w tp myworld 0 64 0 90 0
+
+# Teleport all players in current world
+/world tp @a <target_world>
+/w tp @a spawn
+
+# Safe teleportation (find safe location)
+/world tp <world_name> --safe
+/w tp dangerous_world --safe
+```
+
+## Backup and Restore
+
+### Manual Backups
+
+```bash
+# Create backup (clone)
+/world backup <world_name>
+/w backup important_world
+
+# Create timestamped backup
+/world backup <world_name> --timestamp
+/w backup myworld --timestamp
+
+# Backup multiple worlds
+/world backup <world1> <world2> <world3>
+/w backup survival creative minigames
+```
+
+### Restore Operations
+
+```bash
+# Restore from backup
+/world restore <backup_name> <target_name>
+/w restore myworld_backup_20240612 myworld_restored
+
+# Restore and replace existing
+/world restore <backup_name> <target_name> --replace
+/w restore backup_world myworld --replace
+```
+
+## Batch Operations
+
+### Multiple World Commands
+
+```bash
+# Load multiple worlds
+/world load world1 world2 world3
+/w load survival creative minigames
+
+# Unload multiple worlds
+/world unload world1 world2 world3
+/w unload temp1 temp2 temp3
+
+# Configure multiple worlds
+/world config set difficulty hard world1 world2
+/w config enable pvp survival creative
+```
+
+### Pattern-Based Operations
+
+```bash
+# Operations on worlds matching pattern
+/world load --pattern "survival_*"
+/w unload --pattern "temp_*"
+/w remove --pattern "backup_*" --confirm
+```
+
+## Administrative Commands
+
+### World Statistics
+
+```bash
+# View world statistics
+/world stats
+/w stats
+
+# Detailed world information
+/world stats <world_name>
+/w stats myworld
+
+# Performance statistics
+/world stats --performance
+/w stats --memory
+```
+
+### Maintenance Operations
+
+```bash
+# Validate world integrity
+/world validate <world_name>
+/w validate myworld
+
+# Repair world if possible
+/world repair <world_name>
+/w repair corrupted_world
+
+# Optimize world files
+/world optimize <world_name>
+/w optimize large_world
+```
+
+## Tab Completion
+
+LilWorlds provides comprehensive tab completion for all commands:
+
+### World Names
+- Tab complete existing world names
+- Shows both loaded and unloaded worlds
+- Filters based on permissions
+
+### Command Arguments
+- Environment types: `NORMAL`, `NETHER`, `THE_END`
+- Generator names from generators folder
+- Configuration keys and values
+- Player names for teleportation
+
+### Advanced Completion
+- File paths for import operations
+- Coordinate suggestions for teleportation
+- Pattern matching for bulk operations
+
+## Permission Requirements
+
+### Basic Permissions
+
+```yaml
+# Basic world commands
+lilworlds.world.info          # View world information
+lilworlds.world.list          # List worlds
+lilworlds.world.tp            # Teleport to worlds
+
+# World management
+lilworlds.world.create        # Create worlds
+lilworlds.world.load          # Load worlds
+lilworlds.world.unload        # Unload worlds
+lilworlds.world.clone         # Clone worlds
+lilworlds.world.import        # Import worlds
+```
+
+### Advanced Permissions
+
+```yaml
+# Dangerous operations
+lilworlds.world.remove        # Delete worlds
+lilworlds.world.remove.force  # Force delete without confirmation
+lilworlds.world.config        # Modify world configuration
+
+# Administrative
+lilworlds.admin.backup        # Create backups
+lilworlds.admin.restore       # Restore from backups
+lilworlds.admin.maintenance   # Maintenance operations
+lilworlds.admin.bulk          # Bulk operations
+```
+
+## Error Handling
+
+### Common Error Messages
+
+<AccordionGroup>
+  <Accordion title="World Not Found">
+    ```
+    ❌ World 'myworld' not found!
+    
+    Available worlds: world, creative_world, nether_world
+    Use '/world list' to see all worlds.
+    ```
+  </Accordion>
+  
+  <Accordion title="Permission Denied">
+    ```
+    ❌ You don't have permission to perform this action!
+    
+    Required permission: lilworlds.world.create
+    Contact an administrator for access.
+    ```
+  </Accordion>
+  
+  <Accordion title="World Already Exists">
+    ```
+    ❌ World 'myworld' already exists!
+    
+    Use '/world info myworld' to view existing world.
+    Choose a different name or use '/world remove myworld' to delete.
+    ```
+  </Accordion>
+  
+  <Accordion title="Rate Limited">
+    ```
+    ⏱️ You must wait 45 seconds before creating another world!
+    
+    Rate limiting helps maintain server performance.
+    Current limit: 10 worlds per hour.
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Command Examples
+
+### Complete Workflows
+
+<AccordionGroup>
+  <Accordion title="Setting Up Multi-World Server">
+    ```bash
+    # Create main worlds
+    /w create survival NORMAL
+    /w create survival_nether NETHER  
+    /w create survival_the_end THE_END
+    /w create creative NORMAL -g FlatGenerator
+    
+    # Set spawn points
+    /w tp survival
+    /w setspawn
+    /w tp creative
+    /w setspawn
+    
+    # Configure worlds
+    /w config set difficulty normal survival
+    /w config enable pvp survival
+    /w config set difficulty peaceful creative
+    /w config disable pvp creative
+    ```
+  </Accordion>
+  
+  <Accordion title="Creating Backup System">
+    ```bash
+    # Create backups
+    /w clone survival survival_backup_daily
+    /w clone creative creative_backup_daily
+    
+    # Unload backups to save memory
+    /w unload survival_backup_daily
+    /w unload creative_backup_daily
+    
+    # Weekly backup rotation
+    /w remove survival_backup_weekly --backup
+    /w clone survival_backup_daily survival_backup_weekly
+    ```
+  </Accordion>
+  
+  <Accordion title="Event World Setup">
+    ```bash
+    # Create event world
+    /w create event_pvp NORMAL -g VoidGenerator
+    
+    # Configure for PvP event
+    /w config enable pvp event_pvp
+    /w config set difficulty hard event_pvp
+    /w config enable keepInventory event_pvp
+    /w config disable doDaylightCycle event_pvp
+    
+    # Set spawn and teleport players
+    /w tp event_pvp 0 64 0
+    /w setspawn event_pvp
+    /w tp @a event_pvp
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Admin Commands"
+    icon="crown"
+    href="/lilworlds/commands/admin-commands"
+  >
+    Learn about plugin administration commands
+  </Card>
+  <Card
+    title="Permissions Guide"
+    icon="key"
+    href="/lilworlds/commands/permissions"
+  >
+    Complete permissions reference and setup
+  </Card>
+  <Card
+    title="World Management"
+    icon="globe"
+    href="/lilworlds/world-management"
+  >
+    Advanced world management techniques
+  </Card>
+  <Card
+    title="Configuration"
+    icon="gear"
+    href="/lilworlds/configuration"
+  >
+    Customize command behavior and settings
+  </Card>
+</CardGroup>

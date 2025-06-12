@@ -1,0 +1,717 @@
+---
+title: 'Custom Generators'
+description: 'Create and configure custom world generators'
+icon: 'wand-magic-sparkles'
+---
+
+## Overview
+
+LilWorlds features a powerful custom generator system that allows you to create unique world generation patterns without writing Java code. Generators are defined using YAML configuration files in the `generators/` folder.
+
+<CardGroup cols={2}>
+  <Card title="Built-in Generators" icon="cube">
+    **VoidGenerator**
+    
+    Pre-configured void world generator with optional spawn platform
+  </Card>
+  <Card title="Custom Generators" icon="wand-magic-sparkles">
+    **YAML-Based**
+    
+    Create custom generators using simple configuration files
+  </Card>
+</CardGroup>
+
+## Generator Types
+
+### Supported Generator Types
+
+| Type | Description | Use Case |
+|------|-------------|----------|
+| `VOID` | Empty void worlds | Creative building, minigames |
+| `FLAT` | Flat terrain with custom layers | Superflat worlds, testing |
+| `NORMAL` | Modified normal terrain | Custom overworld generation |
+| `AMPLIFIED` | Amplified terrain generation | Extreme terrain |
+| `LARGE_BIOMES` | Large biome generation | Exploration worlds |
+
+## Built-in VoidGenerator
+
+LilWorlds comes with a pre-configured void generator:
+
+### Using VoidGenerator
+
+```bash
+# Create a void world
+/world create void_world NORMAL -g VoidGenerator
+
+# Create void world in different dimension
+/world create void_nether NETHER -g VoidGenerator
+```
+
+### VoidGenerator Configuration
+
+```yaml
+# generators/VoidGenerator.yml
+name: "VoidGenerator"
+type: "VOID"
+description: "Empty void world with optional spawn platform"
+
+settings:
+  # Spawn platform configuration
+  spawn-platform: true
+  platform-material: "minecraft:stone"
+  platform-size: 16
+  platform-height: 64
+  
+  # Environment settings
+  biome: "minecraft:the_void"
+  structures: false
+  decorations: false
+  
+  # Additional options
+  spawn-mobs: false
+  weather: false
+```
+
+## Creating Custom Generators
+
+### Basic Generator Structure
+
+Create a new file in `plugins/LilWorlds/generators/` with this structure:
+
+```yaml
+# generators/MyGenerator.yml
+name: "MyGenerator"
+type: "FLAT"
+description: "Description of your generator"
+
+settings:
+  # Generator-specific settings
+  layers:
+    - "minecraft:bedrock"
+    - "minecraft:stone,10"
+    - "minecraft:grass_block"
+    
+  # Common settings
+  structures: true
+  decorations: true
+  biome: "minecraft:plains"
+```
+
+### Generator Properties
+
+<AccordionGroup>
+  <Accordion title="Required Properties">
+    ```yaml
+    name: "GeneratorName"        # Must match filename
+    type: "FLAT"                 # Generator type
+    description: "Description"   # Human-readable description
+    settings: {}                 # Generator settings
+    ```
+  </Accordion>
+  
+  <Accordion title="Optional Properties">
+    ```yaml
+    version: "1.0"              # Generator version
+    author: "YourName"          # Creator name
+    minecraft-version: "1.20"   # Target MC version
+    dependencies: []            # Required plugins
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Flat World Generators
+
+### Basic Flat Generator
+
+```yaml
+# generators/FlatGrass.yml
+name: "FlatGrass"
+type: "FLAT"
+description: "Simple flat grass world"
+
+settings:
+  # Layer configuration (bottom to top)
+  layers:
+    - "minecraft:bedrock"
+    - "minecraft:dirt,3"
+    - "minecraft:grass_block"
+    
+  # Generation settings
+  structures: false
+  decorations: false
+  
+  # Biome settings
+  biome: "minecraft:plains"
+```
+
+### Advanced Flat Generator
+
+```yaml
+# generators/CustomFlat.yml
+name: "CustomFlat"
+type: "FLAT"
+description: "Advanced flat world with custom layers"
+
+settings:
+  # Complex layer structure
+  layers:
+    - "minecraft:bedrock"
+    - "minecraft:deepslate,5"
+    - "minecraft:stone,20"
+    - "minecraft:dirt,5"
+    - "minecraft:grass_block"
+    - "minecraft:air,10"
+    - "minecraft:glass"
+    
+  # Structure generation
+  structures:
+    villages: true
+    strongholds: false
+    mineshafts: false
+    dungeons: true
+    
+  # Decoration settings
+  decorations:
+    trees: true
+    flowers: true
+    grass: true
+    lakes: false
+    
+  # Biome configuration
+  biomes:
+    - "minecraft:plains"
+    - "minecraft:forest"
+    
+  # Spawn settings
+  spawn-height: 64
+  spawn-biome: "minecraft:plains"
+```
+
+### Layer Syntax
+
+```yaml
+layers:
+  # Single block layer
+  - "minecraft:bedrock"
+  
+  # Multiple blocks (thickness)
+  - "minecraft:stone,10"
+  
+  # Random thickness range
+  - "minecraft:dirt,3-5"
+  
+  # Weighted random blocks
+  - "minecraft:stone,5;minecraft:cobblestone,2"
+  
+  # Conditional layers
+  - "minecraft:snow_block,1[biome=snowy]"
+```
+
+## Void Generators
+
+### Basic Void Generator
+
+```yaml
+# generators/SimpleVoid.yml
+name: "SimpleVoid"
+type: "VOID"
+description: "Simple empty void world"
+
+settings:
+  # No spawn platform
+  spawn-platform: false
+  
+  # Environment
+  biome: "minecraft:the_void"
+  structures: false
+  decorations: false
+  
+  # Lighting
+  ambient-light: 0
+  sky-light: false
+```
+
+### Void with Islands
+
+```yaml
+# generators/VoidIslands.yml
+name: "VoidIslands"
+type: "VOID"
+description: "Void world with floating islands"
+
+settings:
+  # Main spawn platform
+  spawn-platform: true
+  platform-material: "minecraft:grass_block"
+  platform-size: 32
+  platform-height: 64
+  
+  # Additional islands
+  islands:
+    - material: "minecraft:stone"
+      size: 16
+      height: 80
+      distance: 100
+      count: 5
+      
+    - material: "minecraft:sand"
+      size: 12
+      height: 50
+      distance: 150
+      count: 3
+  
+  # Environment
+  biome: "minecraft:plains"
+  structures: false
+  spawn-mobs: true
+```
+
+## Normal World Generators
+
+### Modified Terrain
+
+```yaml
+# generators/CustomTerrain.yml
+name: "CustomTerrain"
+type: "NORMAL"
+description: "Modified normal world generation"
+
+settings:
+  # Terrain modification
+  terrain:
+    height-scale: 1.5
+    coordinate-scale: 684.412
+    height-stretch: 12.0
+    upper-limit-scale: 512.0
+    lower-limit-scale: 512.0
+    
+  # Ore generation
+  ores:
+    coal:
+      min-height: 0
+      max-height: 128
+      vein-size: 17
+      tries-per-chunk: 20
+      
+    iron:
+      min-height: 0
+      max-height: 64
+      vein-size: 9
+      tries-per-chunk: 20
+      
+    diamond:
+      min-height: 0
+      max-height: 16
+      vein-size: 8
+      tries-per-chunk: 1
+      
+  # Structure generation
+  structures:
+    villages: true
+    strongholds: true
+    mineshafts: false
+    dungeons: true
+    temples: true
+    
+  # Biome settings
+  biomes:
+    - "minecraft:plains"
+    - "minecraft:forest"
+    - "minecraft:mountains"
+    - "minecraft:desert"
+    
+  # Water and lava lakes
+  lakes:
+    water:
+      chance: 4
+      min-height: 0
+      max-height: 128
+      
+    lava:
+      chance: 80
+      min-height: 0
+      max-height: 16
+```
+
+### Amplified Worlds
+
+```yaml
+# generators/ExtremeHills.yml
+name: "ExtremeHills"
+type: "AMPLIFIED"
+description: "Extreme terrain generation"
+
+settings:
+  # Amplification settings
+  amplification:
+    factor: 2.0
+    height-variation: 1.5
+    
+  # Terrain features
+  terrain:
+    max-height: 320
+    min-height: -64
+    sea-level: 63
+    
+  # Enhanced ore generation for tall worlds
+  ores:
+    coal:
+      min-height: 0
+      max-height: 256
+      vein-size: 17
+      tries-per-chunk: 30
+      
+  # Biome distribution
+  biomes:
+    - "minecraft:mountains"
+    - "minecraft:extreme_hills"
+    - "minecraft:stone_peaks"
+    - "minecraft:snowy_peaks"
+```
+
+## Advanced Features
+
+### Conditional Generation
+
+```yaml
+# generators/ConditionalGen.yml
+name: "ConditionalGen"
+type: "FLAT"
+description: "Generator with conditional features"
+
+settings:
+  # Base layers
+  layers:
+    - "minecraft:bedrock"
+    - "minecraft:stone,10"
+    - "minecraft:dirt,3"
+    - "minecraft:grass_block"
+    
+  # Conditional features
+  conditions:
+    # Snow in cold biomes
+    - condition: "biome=snowy"
+      layers:
+        - "minecraft:snow_block,2"
+        
+    # Sand in desert biomes
+    - condition: "biome=desert"
+      layers:
+        - "minecraft:sand,5"
+        - "minecraft:sandstone,3"
+        
+    # Different structures per biome
+    - condition: "biome=plains"
+      structures:
+        villages: true
+        
+    - condition: "biome=desert"
+      structures:
+        desert_temples: true
+```
+
+### Multi-Biome Generators
+
+```yaml
+# generators/MultiBiome.yml
+name: "MultiBiome"
+type: "NORMAL"
+description: "Generator with multiple biome configurations"
+
+settings:
+  # Biome-specific settings
+  biome-configs:
+    "minecraft:plains":
+      layers:
+        - "minecraft:bedrock"
+        - "minecraft:stone,30"
+        - "minecraft:dirt,4"
+        - "minecraft:grass_block"
+      structures:
+        villages: true
+        
+    "minecraft:desert":
+      layers:
+        - "minecraft:bedrock"
+        - "minecraft:stone,25"
+        - "minecraft:sandstone,8"
+        - "minecraft:sand,4"
+      structures:
+        desert_temples: true
+        
+    "minecraft:forest":
+      layers:
+        - "minecraft:bedrock"
+        - "minecraft:stone,35"
+        - "minecraft:dirt,6"
+        - "minecraft:grass_block"
+      decorations:
+        trees: high
+        flowers: medium
+```
+
+## Generator Management
+
+### Loading Generators
+
+```bash
+# Reload all generators
+/worlds reload generators
+
+# List available generators
+/worlds generators list
+
+# Test a generator
+/worlds generators test MyGenerator
+
+# Validate generator configuration
+/worlds generators validate MyGenerator
+```
+
+### Using Generators
+
+```bash
+# Create world with custom generator
+/world create myworld NORMAL -g MyGenerator
+
+# Create with built-in generator
+/world create voidworld NORMAL -g VoidGenerator
+
+# Import world with generator
+/world import existing_world NORMAL -g CustomFlat
+```
+
+## Generator Templates
+
+### Creating Templates
+
+```yaml
+# templates/basic-flat.yml
+name: "BasicFlat"
+type: "FLAT"
+description: "Template for basic flat worlds"
+
+template-variables:
+  - name: "surface_block"
+    type: "material"
+    default: "minecraft:grass_block"
+    description: "Surface block material"
+    
+  - name: "thickness"
+    type: "integer"
+    default: 3
+    min: 1
+    max: 10
+    description: "Dirt layer thickness"
+
+settings:
+  layers:
+    - "minecraft:bedrock"
+    - "minecraft:stone,10"
+    - "minecraft:dirt,${thickness}"
+    - "${surface_block}"
+```
+
+### Using Templates
+
+```bash
+# Create generator from template
+/worlds generators create MyFlat --template basic-flat --surface_block minecraft:sand --thickness 5
+
+# List available templates
+/worlds generators templates
+
+# Export generator as template
+/worlds generators export MyGenerator --as-template
+```
+
+## Best Practices
+
+### Performance Optimization
+
+<Tip>
+**Performance Tips:**
+- Use void generators for creative/testing worlds
+- Limit complex ore generation in large worlds
+- Disable unnecessary structures and decorations
+- Use efficient biome distributions
+- Test generators in small worlds first
+</Tip>
+
+### Organization
+
+```
+plugins/LilWorlds/generators/
+├── VoidGenerator.yml          # Built-in void generator
+├── production/
+│   ├── SurvivalFlat.yml      # Production generators
+│   └── CreativeVoid.yml
+├── experimental/
+│   ├── TestGenerator.yml     # Experimental generators
+│   └── BetaFeatures.yml
+└── templates/
+    ├── flat-template.yml     # Reusable templates
+    └── void-template.yml
+```
+
+### Naming Conventions
+
+```yaml
+# Good naming examples
+name: "SurvivalFlat"          # Clear purpose
+name: "CreativeVoid"          # Environment indication
+name: "MinigamePlatform"      # Use case specific
+name: "TestingGround"         # Temporary/testing
+
+# Avoid
+name: "Generator1"            # Non-descriptive
+name: "MyGen"                 # Too generic
+name: "test"                  # Unclear purpose
+```
+
+## Troubleshooting
+
+### Common Issues
+
+<AccordionGroup>
+  <Accordion title="Generator Not Loading">
+    **Symptoms:** Generator not available in `/world create`
+    
+    **Solutions:**
+    - Check YAML syntax with validator
+    - Verify filename matches generator name
+    - Use `/worlds generators validate <name>`
+    - Check console for error messages
+    - Ensure file is in `generators/` folder
+  </Accordion>
+  
+  <Accordion title="World Generation Errors">
+    **Symptoms:** Worlds create but terrain is wrong
+    
+    **Solutions:**
+    - Validate generator configuration
+    - Test with simple settings first
+    - Check material names are valid
+    - Verify biome names exist
+    - Test in creative mode first
+  </Accordion>
+  
+  <Accordion title="Performance Issues">
+    **Symptoms:** Slow world generation or server lag
+    
+    **Solutions:**
+    - Simplify ore generation settings
+    - Reduce structure generation
+    - Use fewer biome types
+    - Optimize layer configurations
+    - Test with smaller worlds
+  </Accordion>
+</AccordionGroup>
+
+### Validation
+
+```bash
+# Validate specific generator
+/worlds generators validate MyGenerator
+
+# Test generator without creating world
+/worlds generators test MyGenerator --dry-run
+
+# Check generator compatibility
+/worlds generators check MyGenerator --minecraft-version 1.20
+```
+
+## Examples and Use Cases
+
+### Minigame Arenas
+
+```yaml
+# generators/PvPArena.yml
+name: "PvPArena"
+type: "VOID"
+description: "PvP arena with platforms"
+
+settings:
+  spawn-platform: true
+  platform-material: "minecraft:stone_bricks"
+  platform-size: 64
+  platform-height: 100
+  
+  # Additional platforms
+  platforms:
+    - material: "minecraft:cobblestone"
+      size: 16
+      height: 110
+      positions:
+        - [32, 32]
+        - [-32, 32]
+        - [32, -32]
+        - [-32, -32]
+  
+  biome: "minecraft:plains"
+  structures: false
+  spawn-mobs: false
+```
+
+### Skyblock Worlds
+
+```yaml
+# generators/Skyblock.yml
+name: "Skyblock"
+type: "VOID"
+description: "Classic skyblock starting island"
+
+settings:
+  spawn-platform: true
+  platform-material: "minecraft:grass_block"
+  platform-size: 8
+  platform-height: 64
+  
+  # Starting resources
+  features:
+    - type: "tree"
+      material: "minecraft:oak_log"
+      position: [2, 1, 2]
+      
+    - type: "chest"
+      position: [0, 1, 0]
+      contents:
+        - "minecraft:ice,2"
+        - "minecraft:lava_bucket,1"
+        - "minecraft:bread,5"
+  
+  biome: "minecraft:plains"
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="World Creation"
+    icon="plus"
+    href="/lilworlds/world-creation"
+  >
+    Learn to create worlds with your custom generators
+  </Card>
+  <Card
+    title="Performance Guide"
+    icon="gauge-high"
+    href="/lilworlds/performance"
+  >
+    Optimize generator performance for your server
+  </Card>
+  <Card
+    title="API Integration"
+    icon="code"
+    href="/lilworlds/api/overview"
+  >
+    Integrate generators with other plugins
+  </Card>
+  <Card
+    title="Commands Reference"
+    icon="terminal"
+    href="/lilworlds/commands/world-commands"
+  >
+    Complete command reference for generator usage
+  </Card>
+</CardGroup>
