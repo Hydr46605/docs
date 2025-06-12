@@ -21,10 +21,20 @@
         "lilworlds/introduction",
         "lilworlds/installation",
         "lilworlds/quick-start",
-        "lilworlds/configuration",
+        "lilworlds/configuration"
+      ]
+    },
+    {
+      "group": "World Management",
+      "pages": [
         "lilworlds/world-management",
         "lilworlds/world-deletion",
-        "lilworlds/custom-generators",
+        "lilworlds/custom-generators"
+      ]
+    },
+    {
+      "group": "Commands",
+      "pages": [
         "lilworlds/commands/world-commands",
         "lilworlds/commands/admin-commands"
       ]
