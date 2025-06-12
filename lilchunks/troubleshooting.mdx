@@ -1,0 +1,779 @@
+---
+title: 'Troubleshooting'
+description: 'Common issues and solutions for LilChunks'
+icon: 'wrench'
+---
+
+# Troubleshooting Guide
+
+Comprehensive solutions for common LilChunks issues and problems.
+
+## Quick Diagnostics
+
+Before diving into specific issues, run these quick diagnostic checks:
+
+<Steps>
+  <Step title="Check Plugin Status">
+    Verify LilChunks is loaded and enabled:
+    ```bash
+    /plugins
+    # Look for LilChunks in green
+    ```
+  </Step>
+  
+  <Step title="Test Basic Commands">
+    Try basic functionality:
+    ```bash
+    /lc help
+    /lc status
+    ```
+  </Step>
+  
+  <Step title="Check Permissions">
+    Verify you have the required permissions:
+    ```bash
+    /lp user <username> permission check lilchunks.use
+    /lp user <username> permission check lilchunks.admin
+    ```
+  </Step>
+  
+  <Step title="Review Server Logs">
+    Check for error messages:
+    ```bash
+    # Look for LilChunks-related errors
+    tail -f logs/latest.log | grep -i lilchunks
+    ```
+  </Step>
+</Steps>
+
+## Common Issues
+
+### Installation and Loading Issues
+
+<AccordionGroup>
+  <Accordion title="Plugin Not Loading" icon="exclamation-triangle">
+    **Symptoms**:
+    - LilChunks doesn't appear in `/plugins` list
+    - No startup messages in console
+    - Commands not recognized
+    
+    **Causes & Solutions**:
+    
+    <Tabs>
+      <Tab title="Java Version">
+        **Problem**: Using Java 16 or older
+        
+        **Solution**: Upgrade to Java 17+
+        ```bash
+        # Check Java version
+        java -version
+        
+        # Should show Java 17 or higher
+        openjdk version "17.0.x" or higher
+        ```
+      </Tab>
+      
+      <Tab title="Corrupted Download">
+        **Problem**: Incomplete or corrupted jar file
+        
+        **Solution**: Re-download LilChunks
+        ```bash
+        # Check file size (should be ~150KB)
+        ls -lh plugins/lilchunks*.jar
+        
+        # Re-download if size is wrong
+        ```
+      </Tab>
+      
+      <Tab title="Server Compatibility">
+        **Problem**: Unsupported server software
+        
+        **Solution**: Use Bukkit/Spigot/Paper
+        ```bash
+        # Check server version
+        /version
+        
+        # Supported: Bukkit, Spigot, Paper 1.16.5+
+        ```
+      </Tab>
+      
+      <Tab title="File Permissions">
+        **Problem**: Server can't read the jar file
+        
+        **Solution**: Fix file permissions
+        ```bash
+        # Linux/Mac
+        chmod 644 plugins/lilchunks*.jar
+        chown minecraft:minecraft plugins/lilchunks*.jar
+        ```
+      </Tab>
+    </Tabs>
+  </Accordion>
+  
+  <Accordion title="Version Compatibility Error" icon="code-branch">
+    **Symptoms**:
+    ```
+    [ERROR] This version of Minecraft is not supported!
+    [ERROR] Please use version 1.16.5 or higher.
+    ```
+    
+    **Solutions**:
+    1. **Update Server**: Upgrade to Minecraft 1.16.5 or higher
+    2. **Check Version**: Verify actual server version with `/version`
+    3. **Update LilChunks**: Ensure you have the latest version
+    
+    **Supported Versions**:
+    - ✅ Minecraft 1.16.5 - 1.21.5
+    - ❌ Minecraft 1.16.4 and below
+  </Accordion>
+  
+  <Accordion title="Configuration Errors" icon="gear">
+    **Symptoms**:
+    ```
+    [WARN] Invalid configuration value: chunks-per-tick
+    [WARN] Using default value: 4
+    ```
+    
+    **Solutions**:
+    1. **Validate YAML**: Check config.yml syntax
+    2. **Reset Config**: Delete config.yml to regenerate defaults
+    3. **Check Values**: Ensure all values are within valid ranges
+    
+    ```bash
+    # Backup and reset config
+    mv plugins/LilChunks/config.yml plugins/LilChunks/config.yml.backup
+    /lc reload
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### Command and Permission Issues
+
+<AccordionGroup>
+  <Accordion title="Command Not Found" icon="terminal">
+    **Symptoms**:
+    ```
+    Unknown command. Type "/help" for help.
+    ```
+    
+    **Solutions**:
+    
+    <Tabs>
+      <Tab title="Plugin Not Loaded">
+        **Check**: Is LilChunks loaded?
+        ```bash
+        /plugins
+        # LilChunks should be green
+        ```
+        
+        **Fix**: Restart server or reload plugin
+      </Tab>
+      
+      <Tab title="Wrong Command">
+        **Check**: Using correct command syntax?
+        ```bash
+        # Correct commands:
+        /lilchunks help
+        /lc help
+        /chunks help
+        ```
+      </Tab>
+      
+      <Tab title="Command Conflicts">
+        **Check**: Another plugin using same command?
+        ```bash
+        # Try full command name
+        /lilchunks:help
+        /lilchunks:start 10
+        ```
+      </Tab>
+    </Tabs>
+  </Accordion>
+  
+  <Accordion title="Permission Denied" icon="lock">
+    **Symptoms**:
+    ```
+    You don't have permission to use this command.
+    ```
+    
+    **Solutions**:
+    
+    <Tabs>
+      <Tab title="Grant Permissions">
+        ```bash
+        # Basic access
+        /lp user <username> permission set lilchunks.use true
+        
+        # Admin access
+        /lp user <username> permission set lilchunks.admin true
+        
+        # Or use OP
+        /op <username>
+        ```
+      </Tab>
+      
+      <Tab title="Check Current Permissions">
+        ```bash
+        # Check what permissions user has
+        /lp user <username> permission info
+        
+        # Test specific permission
+        /lp user <username> permission check lilchunks.admin
+        ```
+      </Tab>
+      
+      <Tab title="Permission Plugin Issues">
+        ```bash
+        # Check if permission plugin is working
+        /plugins
+        
+        # Try without permission plugin (OP only)
+        /op <username>
+        /lc help
+        ```
+      </Tab>
+    </Tabs>
+  </Accordion>
+</AccordionGroup>
+
+### Generation Issues
+
+<AccordionGroup>
+  <Accordion title="Generation Won't Start" icon="play">
+    **Symptoms**:
+    ```
+    Failed to start chunk generation.
+    ```
+    
+    **Diagnostic Steps**:
+    
+    <Steps>
+      <Step title="Check Current Status">
+        ```bash
+        /lc status
+        # Is generation already running?
+        ```
+      </Step>
+      
+      <Step title="Verify World Access">
+        ```bash
+        # Can you access the world?
+        /tp 0 100 0
+        ```
+      </Step>
+      
+      <Step title="Check Server Resources">
+        ```bash
+        /tps
+        /memory
+        # Is server overloaded?
+        ```
+      </Step>
+      
+      <Step title="Try Smaller Radius">
+        ```bash
+        # Start with minimal test
+        /lc start 1
+        ```
+      </Step>
+    </Steps>
+    
+    **Common Causes**:
+    - Generation already running in world
+    - Insufficient server resources
+    - World protection plugins blocking access
+    - Invalid world or location
+  </Accordion>
+  
+  <Accordion title="Generation Stops Unexpectedly" icon="stop">
+    **Symptoms**:
+    - Generation stops without completing
+    - No error messages
+    - Status shows "Stopped"
+    
+    **Investigation**:
+    
+    <Tabs>
+      <Tab title="Check Logs">
+        ```bash
+        # Look for error messages
+        grep -i "lilchunks\|error\|exception" logs/latest.log
+        
+        # Check for memory issues
+        grep -i "outofmemory\|gc" logs/latest.log
+        ```
+      </Tab>
+      
+      <Tab title="Server Resources">
+        ```bash
+        # Check if server ran out of resources
+        /tps
+        /memory
+        
+        # Check disk space
+        df -h
+        ```
+      </Tab>
+      
+      <Tab title="Plugin Conflicts">
+        ```bash
+        # Disable other plugins temporarily
+        /plugins
+        
+        # Test with minimal plugins
+        ```
+      </Tab>
+    </Tabs>
+  </Accordion>
+  
+  <Accordion title="Very Slow Generation" icon="turtle">
+    **Symptoms**:
+    - Generation speed < 5 chunks/second
+    - Taking much longer than expected
+    - Server feels sluggish
+    
+    **Optimization Steps**:
+    
+    <Steps>
+      <Step title="Check Current Settings">
+        ```yaml
+        # Review config.yml
+        chunk-generation:
+          chunks-per-tick: ?
+          use-async: ?
+        performance:
+          use-parallel: ?
+          thread-count: ?
+        ```
+      </Step>
+      
+      <Step title="Monitor Performance">
+        ```bash
+        /tps
+        /lc status
+        # Note current speed
+        ```
+      </Step>
+      
+      <Step title="Adjust Configuration">
+        ```yaml
+        # Try these optimizations
+        chunk-generation:
+          chunks-per-tick: 2  # Reduce if TPS low
+          use-async: true
+        performance:
+          use-parallel: true
+          thread-count: 0  # Auto-detect
+        ```
+      </Step>
+      
+      <Step title="Reload and Test">
+        ```bash
+        /lc reload
+        /lc status
+        # Check if speed improved
+        ```
+      </Step>
+    </Steps>
+  </Accordion>
+</AccordionGroup>
+
+### Performance Issues
+
+<AccordionGroup>
+  <Accordion title="Server Lag During Generation" icon="hourglass">
+    **Symptoms**:
+    - TPS drops below 15
+    - Players experience lag
+    - Server feels unresponsive
+    
+    **Immediate Actions**:
+    
+    <Steps>
+      <Step title="Check TPS">
+        ```bash
+        /tps
+        # If below 15, take action immediately
+        ```
+      </Step>
+      
+      <Step title="Reduce Generation Speed">
+        ```yaml
+        # Edit config.yml
+        chunk-generation:
+          chunks-per-tick: 1  # Reduce significantly
+        ```
+        ```bash
+        /lc reload
+        ```
+      </Step>
+      
+      <Step title="Consider Stopping">
+        ```bash
+        # If TPS still low, stop generation
+        /lc stop
+        ```
+      </Step>
+      
+      <Step title="Optimize Configuration">
+        ```yaml
+        # Use conservative settings
+        chunk-generation:
+          chunks-per-tick: 1
+          generate-structures: false
+          generate-features: false
+        performance:
+          use-parallel: false
+          thread-count: 1
+          max-memory-usage: 1024
+        ```
+      </Step>
+    </Steps>
+  </Accordion>
+  
+  <Accordion title="Memory Issues" icon="memory">
+    **Symptoms**:
+    ```
+    java.lang.OutOfMemoryError: Java heap space
+    ```
+    
+    **Solutions**:
+    
+    <Tabs>
+      <Tab title="Increase Heap Size">
+        ```bash
+        # Increase JVM memory allocation
+        java -Xms4G -Xmx8G -jar server.jar
+        ```
+      </Tab>
+      
+      <Tab title="Set Memory Limits">
+        ```yaml
+        # Limit LilChunks memory usage
+        performance:
+          max-memory-usage: 1024  # 1GB limit
+        ```
+      </Tab>
+      
+      <Tab title="Optimize GC">
+        ```bash
+        # Use G1GC for better memory management
+        java -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -jar server.jar
+        ```
+      </Tab>
+      
+      <Tab title="Reduce Generation Load">
+        ```yaml
+        chunk-generation:
+          chunks-per-tick: 1
+          generate-structures: false
+          generate-caves: false
+          generate-features: false
+        ```
+      </Tab>
+    </Tabs>
+  </Accordion>
+</AccordionGroup>
+
+## Advanced Troubleshooting
+
+### Debug Mode
+
+Enable debug mode for detailed troubleshooting:
+
+<Steps>
+  <Step title="Enable Debug">
+    ```yaml
+    # Edit config.yml
+    debug: true
+    logging:
+      detailed-logs: true
+      progress-interval: 1
+    ```
+  </Step>
+  
+  <Step title="Reload Configuration">
+    ```bash
+    /lc reload
+    ```
+  </Step>
+  
+  <Step title="Reproduce Issue">
+    ```bash
+    # Try to reproduce the problem
+    /lc start 5
+    ```
+  </Step>
+  
+  <Step title="Analyze Logs">
+    ```bash
+    # Check detailed logs
+    tail -f logs/latest.log | grep -i lilchunks
+    ```
+  </Step>
+  
+  <Step title="Disable Debug">
+    ```yaml
+    # Don't forget to disable when done
+    debug: false
+    logging:
+      detailed-logs: false
+    ```
+  </Step>
+</Steps>
+
+### Log Analysis
+
+Common log patterns and their meanings:
+
+<Tabs>
+  <Tab title="Normal Operation">
+    ```
+    [INFO] [LilChunks] Started chunk generation for world: world
+    [INFO] [LilChunks] Generation progress: 50/441 chunks (11%)
+    [INFO] [LilChunks] Generation completed for world: world
+    ```
+    
+    **Meaning**: Everything working normally
+  </Tab>
+  
+  <Tab title="Performance Warnings">
+    ```
+    [WARN] [LilChunks] Generation speed below optimal: 2 chunks/second
+    [WARN] [LilChunks] High memory usage detected: 85%
+    ```
+    
+    **Action**: Optimize configuration or reduce load
+  </Tab>
+  
+  <Tab title="Error Conditions">
+    ```
+    [ERROR] [LilChunks] Failed to generate chunk at 10, 15
+    [ERROR] [LilChunks] OutOfMemoryError during generation
+    [ERROR] [LilChunks] World not accessible: world_name
+    ```
+    
+    **Action**: Address specific error condition
+  </Tab>
+</Tabs>
+
+### Plugin Conflicts
+
+Common plugin conflicts and solutions:
+
+<AccordionGroup>
+  <Accordion title="World Management Plugins" icon="globe">
+    **Conflicting Plugins**: Multiverse, MyWorlds, WorldEdit
+    
+    **Issues**:
+    - World protection preventing generation
+    - Conflicting world loading/unloading
+    - Permission conflicts
+    
+    **Solutions**:
+    1. Temporarily disable conflicting plugins
+    2. Configure world protection to allow LilChunks
+    3. Use different worlds for testing
+  </Accordion>
+  
+  <Accordion title="Performance Plugins" icon="gauge">
+    **Conflicting Plugins**: ClearLag, LagMonitor, TickThreading
+    
+    **Issues**:
+    - Interference with chunk loading
+    - Memory management conflicts
+    - Thread management issues
+    
+    **Solutions**:
+    1. Configure plugins to ignore LilChunks processes
+    2. Adjust timing settings
+    3. Test with plugins disabled
+  </Accordion>
+  
+  <Accordion title="Protection Plugins" icon="shield">
+    **Conflicting Plugins**: WorldGuard, GriefPrevention, Towny
+    
+    **Issues**:
+    - Chunk generation blocked by protection
+    - Permission conflicts
+    - Region conflicts
+    
+    **Solutions**:
+    1. Grant LilChunks bypass permissions
+    2. Configure protection to allow generation
+    3. Use unprotected areas for testing
+  </Accordion>
+</AccordionGroup>
+
+## Getting Help
+
+### Information to Provide
+
+When seeking help, provide this information:
+
+<Tabs>
+  <Tab title="Server Information">
+    ```bash
+    # Server details
+    /version
+    java -version
+    
+    # Plugin list
+    /plugins
+    
+    # LilChunks version
+    /lc help
+    ```
+  </Tab>
+  
+  <Tab title="Configuration">
+    ```yaml
+    # Share your config.yml (remove sensitive info)
+    # Include relevant server.properties settings
+    # Include JVM arguments used
+    ```
+  </Tab>
+  
+  <Tab title="Error Details">
+    ```
+    # Exact error messages
+    # Steps to reproduce
+    # When the issue started
+    # What you were trying to do
+    ```
+  </Tab>
+  
+  <Tab title="Performance Data">
+    ```bash
+    # TPS during issue
+    /tps
+    
+    # Memory usage
+    /memory
+    
+    # Generation status
+    /lc status
+    ```
+  </Tab>
+</Tabs>
+
+### Support Channels
+
+<CardGroup cols={2}>
+  <Card title="GitHub Issues" icon="github">
+    Report bugs and request features on the official repository
+  </Card>
+  <Card title="Discord Community" icon="discord">
+    Get help from the community and developers
+  </Card>
+  <Card title="Documentation" icon="book">
+    Check the complete documentation for solutions
+  </Card>
+  <Card title="Wiki" icon="wikipedia">
+    Community-maintained troubleshooting guides
+  </Card>
+</CardGroup>
+
+## Prevention Tips
+
+<AccordionGroup>
+  <Accordion title="🔄 Regular Maintenance" icon="rotate">
+    - Keep LilChunks updated to the latest version
+    - Regularly review and optimize configuration
+    - Monitor server performance during generation
+    - Backup worlds before large pregeneration tasks
+  </Accordion>
+  
+  <Accordion title="📊 Performance Monitoring" icon="chart-line">
+    - Set up automated TPS monitoring
+    - Use memory monitoring tools
+    - Keep logs of successful configurations
+    - Document what works for your server
+  </Accordion>
+  
+  <Accordion title="🧪 Testing" icon="flask">
+    - Test new configurations on development servers
+    - Start with small generation tasks
+    - Gradually increase generation size
+    - Monitor impact on player experience
+  </Accordion>
+  
+  <Accordion title="📚 Stay Informed" icon="graduation-cap">
+    - Read update changelogs
+    - Follow best practices guides
+    - Join community discussions
+    - Share experiences with others
+  </Accordion>
+</AccordionGroup>
+
+## Emergency Procedures
+
+### Server Unresponsive
+
+If LilChunks causes server to become unresponsive:
+
+<Steps>
+  <Step title="Force Stop Server">
+    ```bash
+    # Kill server process
+    pkill -f "java.*server.jar"
+    
+    # Or use server management tools
+    screen -r minecraft
+    # Ctrl+C to force stop
+    ```
+  </Step>
+  
+  <Step title="Disable LilChunks">
+    ```bash
+    # Rename plugin to prevent loading
+    mv plugins/lilchunks*.jar plugins/lilchunks*.jar.disabled
+    ```
+  </Step>
+  
+  <Step title="Start Server">
+    ```bash
+    # Start server without LilChunks
+    java -jar server.jar
+    ```
+  </Step>
+  
+  <Step title="Investigate Issue">
+    ```bash
+    # Check logs for errors
+    grep -i "error\|exception\|outofmemory" logs/latest.log
+    
+    # Review configuration
+    cat plugins/LilChunks/config.yml
+    ```
+  </Step>
+  
+  <Step title="Fix and Re-enable">
+    ```bash
+    # Fix configuration issues
+    # Re-enable plugin
+    mv plugins/lilchunks*.jar.disabled plugins/lilchunks*.jar
+    
+    # Restart server
+    ```
+  </Step>
+</Steps>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="API Documentation"
+    icon="code"
+    href="/lilchunks/api"
+  >
+    Learn about LilChunks API for developers
+  </Card>
+  <Card
+    title="Performance Guide"
+    icon="gauge-high"
+    href="/lilchunks/performance"
+  >
+    Return to performance optimization guide
+  </Card>
+</CardGroup>

@@ -1,0 +1,360 @@
+---
+title: 'Quick Start'
+description: 'Get started with LilChunks chunk pregeneration in 5 minutes'
+icon: 'rocket'
+---
+
+# Quick Start Guide
+
+Get up and running with LilChunks chunk pregeneration in just a few minutes. This guide will walk you through your first pregeneration task.
+
+<Note>
+This guide assumes you have already [installed LilChunks](/lilchunks/installation) on your server.
+</Note>
+
+## Your First Pregeneration
+
+<Steps>
+  <Step title="Join Your Server">
+    Connect to your Minecraft server and navigate to the area where you want to pregenerate chunks.
+    
+    <Tip>
+    Choose a central location like spawn or a main base area for your first pregeneration.
+    </Tip>
+  </Step>
+  
+  <Step title="Start Pregeneration">
+    Use the start command to begin chunk generation around your current location:
+    
+    ```bash
+    /lilchunks start 10
+    ```
+    
+    This will pregenerate chunks in a 10-chunk radius around your position.
+    
+    <Info>
+    **Chunk Radius Explained**: A radius of 10 means chunks will be generated 10 chunks in each direction from your position, creating a 21x21 chunk area (441 total chunks).
+    </Info>
+  </Step>
+  
+  <Step title="Monitor Progress">
+    Check the generation status to see progress:
+    
+    ```bash
+    /lilchunks status
+    ```
+    
+    You'll see output like:
+    ```
+    Generation Status for world:
+    » Status: Running
+    » Progress: 156/441 chunks
+    ```
+  </Step>
+  
+  <Step title="Wait for Completion">
+    Let the pregeneration complete. You can continue playing while it runs in the background.
+    
+    <Warning>
+    Avoid stopping the server during pregeneration unless necessary. Use `/lilchunks stop` first.
+    </Warning>
+  </Step>
+</Steps>
+
+## Command Aliases
+
+LilChunks provides convenient aliases for faster command execution:
+
+<Tabs>
+  <Tab title="Full Commands">
+    ```bash
+    /lilchunks start 10
+    /lilchunks status
+    /lilchunks stop
+    /lilchunks reload
+    /lilchunks help
+    ```
+  </Tab>
+  <Tab title="Short Alias (/lc)">
+    ```bash
+    /lc start 10
+    /lc status
+    /lc stop
+    /lc reload
+    /lc help
+    ```
+  </Tab>
+  <Tab title="Alternative (/chunks)">
+    ```bash
+    /chunks start 10
+    /chunks status
+    /chunks stop
+    /chunks reload
+    /chunks help
+    ```
+  </Tab>
+</Tabs>
+
+## Common Pregeneration Scenarios
+
+### Small Area (Spawn Protection)
+Perfect for spawn areas and small bases:
+
+```bash
+# 5 chunk radius (11x11 chunks = 121 total)
+/lc start 5
+```
+
+### Medium Area (Town/Base)
+Good for larger bases and town areas:
+
+```bash
+# 15 chunk radius (31x31 chunks = 961 total)
+/lc start 15
+```
+
+### Large Area (World Border)
+For major world areas or world borders:
+
+```bash
+# 50 chunk radius (101x101 chunks = 10,201 total)
+/lc start 50
+```
+
+<Warning>
+Large pregeneration tasks can take significant time and server resources. Start small and monitor performance.
+</Warning>
+
+## Understanding the Output
+
+When you start pregeneration, you'll see colorful status messages:
+
+### Successful Start
+```
+✓ Started chunk generation in a 10 chunk radius.
+```
+
+### Status Check
+```
+Generation Status for world:
+» Status: Running
+» Progress: 156/441 chunks
+» Estimated Time: 2m 30s
+```
+
+### Completion
+```
+✓ Chunk generation completed for world: world
+» Total chunks generated: 441
+» Time taken: 3m 45s
+```
+
+## Managing Multiple Worlds
+
+LilChunks can handle pregeneration in different worlds:
+
+<Tabs>
+  <Tab title="Current World">
+    ```bash
+    # Pregenerate in your current world
+    /lc start 10
+    /lc status
+    /lc stop
+    ```
+  </Tab>
+  <Tab title="Specific World">
+    ```bash
+    # From console, specify world name
+    lc start 10 world_nether
+    lc status world_nether
+    lc stop world_nether
+    ```
+  </Tab>
+</Tabs>
+
+<Note>
+When using commands from the console, you must specify the world name for stop and status commands.
+</Note>
+
+## Performance Monitoring
+
+### Check Server Performance
+Monitor your server's performance during pregeneration:
+
+```bash
+# Check TPS
+/tps
+
+# Check memory usage
+/memory
+
+# Check LilChunks status
+/lc status
+```
+
+### Adjust Generation Speed
+If pregeneration is causing lag, you can adjust the speed in the configuration:
+
+```yaml
+chunk-generation:
+  chunks-per-tick: 2  # Reduce from default 4
+```
+
+Then reload the configuration:
+```bash
+/lc reload
+```
+
+## Stopping Pregeneration
+
+### Graceful Stop
+Always stop pregeneration gracefully when possible:
+
+```bash
+/lc stop
+```
+
+### Emergency Stop
+If the server is unresponsive, you can stop from console:
+
+```bash
+lc stop world_name
+```
+
+### Before Server Restart
+Always stop pregeneration before restarting your server:
+
+```bash
+/lc stop
+/stop
+```
+
+## Tab Completion
+
+LilChunks provides smart tab completion for all commands:
+
+<Tabs>
+  <Tab title="Commands">
+    ```bash
+    /lc <TAB>
+    # Shows: start, stop, status, reload, help
+    ```
+  </Tab>
+  <Tab title="Radius Values">
+    ```bash
+    /lc start <TAB>
+    # Shows: 5, 10, 20, 50
+    ```
+  </Tab>
+  <Tab title="World Names">
+    ```bash
+    /lc stop <TAB>
+    # Shows: world, world_nether, world_the_end
+    ```
+  </Tab>
+</Tabs>
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="🎯 Start Small" icon="target">
+    Begin with small radius values (5-10 chunks) to test performance and understand the impact on your server.
+  </Accordion>
+  
+  <Accordion title="⏰ Off-Peak Hours" icon="clock">
+    Run large pregeneration tasks during off-peak hours when fewer players are online.
+  </Accordion>
+  
+  <Accordion title="📊 Monitor Performance" icon="chart-line">
+    Keep an eye on TPS and memory usage during pregeneration. Stop if performance degrades significantly.
+  </Accordion>
+  
+  <Accordion title="💾 Backup First" icon="floppy-disk">
+    Always backup your world before running large pregeneration tasks.
+  </Accordion>
+  
+  <Accordion title="🔄 Gradual Expansion" icon="arrows-rotate">
+    For very large areas, consider multiple smaller pregeneration sessions rather than one massive task.
+  </Accordion>
+</AccordionGroup>
+
+## Troubleshooting Quick Issues
+
+<AccordionGroup>
+  <Accordion title="Command Not Found" icon="exclamation-triangle">
+    **Problem**: `/lilchunks` command not recognized
+    
+    **Solutions**:
+    - Check if LilChunks is installed: `/plugins`
+    - Verify permissions: `/lp user <name> permission check lilchunks.use`
+    - Try aliases: `/lc` or `/chunks`
+  </Accordion>
+  
+  <Accordion title="Permission Denied" icon="lock">
+    **Problem**: "You don't have permission to use this command"
+    
+    **Solutions**:
+    - Grant permissions: `/lp user <name> permission set lilchunks.admin true`
+    - Use OP: `/op <username>`
+    - Check permission plugin configuration
+  </Accordion>
+  
+  <Accordion title="Generation Won't Start" icon="play">
+    **Problem**: "Failed to start chunk generation"
+    
+    **Solutions**:
+    - Check if generation is already running: `/lc status`
+    - Verify world is loaded and accessible
+    - Check server logs for error messages
+    - Try a smaller radius first
+  </Accordion>
+  
+  <Accordion title="Server Lag" icon="hourglass">
+    **Problem**: Server becomes laggy during pregeneration
+    
+    **Solutions**:
+    - Reduce `chunks-per-tick` in config
+    - Stop current generation: `/lc stop`
+    - Use smaller radius values
+    - Run during off-peak hours
+  </Accordion>
+</AccordionGroup>
+
+## What's Next?
+
+Now that you've completed your first pregeneration, explore more advanced features:
+
+<CardGroup cols={2}>
+  <Card
+    title="Configuration Guide"
+    icon="gear"
+    href="/lilchunks/configuration"
+  >
+    Optimize LilChunks for your server's needs
+  </Card>
+  <Card
+    title="Commands Reference"
+    icon="terminal"
+    href="/lilchunks/commands"
+  >
+    Learn all available commands and options
+  </Card>
+  <Card
+    title="Performance Tuning"
+    icon="gauge-high"
+    href="/lilchunks/performance"
+  >
+    Maximize performance and minimize lag
+  </Card>
+  <Card
+    title="Troubleshooting"
+    icon="wrench"
+    href="/lilchunks/troubleshooting"
+  >
+    Solve common issues and problems
+  </Card>
+</CardGroup>
+
+<Tip>
+Join our community for tips, support, and to share your pregeneration experiences!
+</Tip>

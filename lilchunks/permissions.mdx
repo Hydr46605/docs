@@ -1,0 +1,455 @@
+---
+title: 'Permissions'
+description: 'Complete guide to LilChunks permissions system'
+icon: 'key'
+---
+
+# Permissions Guide
+
+LilChunks uses a simple but effective permission system to control access to commands and features.
+
+## Permission Overview
+
+LilChunks has two main permission nodes that control access to different functionality levels:
+
+<CardGroup cols={2}>
+  <Card title="Basic Access" icon="user">
+    **`lilchunks.use`**
+    
+    View-only permissions for checking status and getting help
+  </Card>
+  <Card title="Administrative" icon="user-shield">
+    **`lilchunks.admin`**
+    
+    Full access to all commands including start, stop, and reload
+  </Card>
+</CardGroup>
+
+## Permission Nodes
+
+### lilchunks.use
+
+**Default**: `true` (all players)  
+**Description**: Basic permission for read-only commands
+
+**Allowed Commands**:
+- `/lilchunks status` - Check generation status
+- `/lilchunks help` - View help information
+
+**Usage Example**:
+```bash
+# Players with lilchunks.use can:
+/lc status    ✓ Check if generation is running
+/lc help      ✓ View available commands
+
+# But cannot:
+/lc start     ✗ Permission denied
+/lc stop      ✗ Permission denied
+/lc reload    ✗ Permission denied
+```
+
+### lilchunks.admin
+
+**Default**: `op` (operators only)  
+**Description**: Administrative permission for all commands
+
+**Allowed Commands**:
+- `/lilchunks start` - Start chunk pregeneration
+- `/lilchunks stop` - Stop chunk pregeneration
+- `/lilchunks reload` - Reload configuration
+- All commands from `lilchunks.use`
+
+**Usage Example**:
+```bash
+# Players with lilchunks.admin can:
+/lc start 10  ✓ Start pregeneration
+/lc stop      ✓ Stop pregeneration
+/lc reload    ✓ Reload config
+/lc status    ✓ Check status
+/lc help      ✓ View help
+```
+
+<Note>
+The `lilchunks.admin` permission automatically includes all `lilchunks.use` permissions.
+</Note>
+
+## Permission Setup
+
+### LuckPerms
+
+LuckPerms is the most popular permission plugin. Here's how to set up LilChunks permissions:
+
+<Tabs>
+  <Tab title="Basic User">
+    ```bash
+    # Grant basic access to a user
+    /lp user <username> permission set lilchunks.use true
+    
+    # Grant basic access to a group
+    /lp group default permission set lilchunks.use true
+    ```
+  </Tab>
+  <Tab title="Administrator">
+    ```bash
+    # Grant admin access to a user
+    /lp user <username> permission set lilchunks.admin true
+    
+    # Grant admin access to a group
+    /lp group admin permission set lilchunks.admin true
+    /lp group moderator permission set lilchunks.admin true
+    ```
+  </Tab>
+  <Tab title="Remove Permissions">
+    ```bash
+    # Remove permissions from a user
+    /lp user <username> permission unset lilchunks.admin
+    /lp user <username> permission unset lilchunks.use
+    
+    # Remove permissions from a group
+    /lp group <groupname> permission unset lilchunks.admin
+    ```
+  </Tab>
+</Tabs>
+
+### PermissionsEx (PEX)
+
+For servers using PermissionsEx:
+
+<Tabs>
+  <Tab title="User Permissions">
+    ```bash
+    # Grant basic access
+    /pex user <username> add lilchunks.use
+    
+    # Grant admin access
+    /pex user <username> add lilchunks.admin
+    ```
+  </Tab>
+  <Tab title="Group Permissions">
+    ```bash
+    # Grant to default group
+    /pex group default add lilchunks.use
+    
+    # Grant to admin group
+    /pex group admin add lilchunks.admin
+    ```
+  </Tab>
+</Tabs>
+
+### GroupManager
+
+For servers using GroupManager:
+
+<Tabs>
+  <Tab title="User Permissions">
+    ```bash
+    # Grant basic access
+    /manuaddp <username> lilchunks.use
+    
+    # Grant admin access
+    /manuaddp <username> lilchunks.admin
+    ```
+  </Tab>
+  <Tab title="Group Permissions">
+    ```bash
+    # Grant to group
+    /mangaddp <groupname> lilchunks.use
+    /mangaddp <groupname> lilchunks.admin
+    ```
+  </Tab>
+</Tabs>
+
+## Default Permission Behavior
+
+### Fresh Installation
+
+When LilChunks is first installed, the default permissions are:
+
+```yaml
+permissions:
+  lilchunks.admin:
+    description: Gives access to all LilChunks commands
+    default: op
+  lilchunks.use:
+    description: Allows using basic LilChunks commands
+    default: true
+```
+
+This means:
+- **All players** can use status and help commands
+- **Only operators** can start, stop, and reload
+
+### No Permission Plugin
+
+If you don't have a permission plugin installed:
+- **Operators** have full access (all commands)
+- **Regular players** have basic access (status, help only)
+
+## Permission Scenarios
+
+### Scenario 1: Public Server
+Allow all players to check status but restrict generation to staff:
+
+```bash
+# LuckPerms setup
+/lp group default permission set lilchunks.use true
+/lp group moderator permission set lilchunks.admin true
+/lp group admin permission set lilchunks.admin true
+```
+
+### Scenario 2: Private Server
+Allow trusted players to use generation commands:
+
+```bash
+# LuckPerms setup
+/lp group default permission set lilchunks.use true
+/lp group trusted permission set lilchunks.admin true
+/lp group vip permission set lilchunks.admin true
+```
+
+### Scenario 3: Staff Only
+Restrict all LilChunks access to staff members:
+
+```bash
+# LuckPerms setup
+/lp group default permission set lilchunks.use false
+/lp group moderator permission set lilchunks.admin true
+/lp group admin permission set lilchunks.admin true
+```
+
+### Scenario 4: World-Specific Permissions
+Grant permissions only in specific worlds:
+
+```bash
+# LuckPerms world-specific permissions
+/lp user <username> permission set lilchunks.admin true world=creative
+/lp group builder permission set lilchunks.admin true world=build_world
+```
+
+## Permission Testing
+
+### Check User Permissions
+Verify what permissions a user has:
+
+<Tabs>
+  <Tab title="LuckPerms">
+    ```bash
+    # Check user permissions
+    /lp user <username> permission check lilchunks.use
+    /lp user <username> permission check lilchunks.admin
+    
+    # List all permissions
+    /lp user <username> permission info
+    ```
+  </Tab>
+  <Tab title="In-Game Testing">
+    ```bash
+    # Test as the user
+    /lc help      # Should work with lilchunks.use
+    /lc status    # Should work with lilchunks.use
+    /lc start 5   # Should work with lilchunks.admin
+    ```
+  </Tab>
+</Tabs>
+
+### Debug Permission Issues
+
+If permissions aren't working correctly:
+
+1. **Check Permission Plugin Status**:
+   ```bash
+   /plugins
+   # Ensure your permission plugin is loaded and enabled
+   ```
+
+2. **Verify Permission Nodes**:
+   ```bash
+   /lp user <username> permission info
+   # Check if the correct permissions are assigned
+   ```
+
+3. **Test with OP**:
+   ```bash
+   /op <username>
+   # Test if commands work with OP status
+   /deop <username>
+   ```
+
+4. **Check Plugin Logs**:
+   Look for permission-related errors in the server console
+
+## Advanced Permission Configuration
+
+### Inheritance
+
+Set up permission inheritance for cleaner management:
+
+```bash
+# LuckPerms inheritance example
+/lp group default permission set lilchunks.use true
+/lp group moderator inherit default
+/lp group moderator permission set lilchunks.admin true
+/lp group admin inherit moderator
+```
+
+### Temporary Permissions
+
+Grant temporary access for specific tasks:
+
+```bash
+# Grant temporary admin access for 1 hour
+/lp user <username> permission settemp lilchunks.admin true 1h
+
+# Grant temporary access for specific duration
+/lp user <username> permission settemp lilchunks.admin true 30m
+```
+
+### Context-Based Permissions
+
+Use contexts for more granular control:
+
+```bash
+# World-specific permissions
+/lp user <username> permission set lilchunks.admin true world=creative
+
+# Server-specific permissions (for networks)
+/lp user <username> permission set lilchunks.admin true server=build
+
+# Time-based permissions
+/lp user <username> permission set lilchunks.admin true time=night
+```
+
+## Permission Best Practices
+
+<AccordionGroup>
+  <Accordion title="🛡️ Principle of Least Privilege" icon="shield">
+    Grant users only the minimum permissions they need for their role.
+    
+    ```bash
+    # Good: Specific permissions
+    /lp group builder permission set lilchunks.use true
+    
+    # Avoid: Wildcard permissions
+    /lp group builder permission set lilchunks.* true
+    ```
+  </Accordion>
+  
+  <Accordion title="👥 Use Groups" icon="users">
+    Manage permissions through groups rather than individual users.
+    
+    ```bash
+    # Create role-based groups
+    /lp creategroup builder
+    /lp creategroup moderator
+    /lp creategroup admin
+    
+    # Assign permissions to groups
+    /lp group builder permission set lilchunks.use true
+    /lp group moderator permission set lilchunks.admin true
+    ```
+  </Accordion>
+  
+  <Accordion title="🔄 Regular Audits" icon="rotate">
+    Regularly review and audit permissions to ensure they're still appropriate.
+    
+    ```bash
+    # Review user permissions
+    /lp user <username> permission info
+    
+    # Review group permissions
+    /lp group <groupname> permission info
+    ```
+  </Accordion>
+  
+  <Accordion title="📝 Document Changes" icon="file-text">
+    Keep track of permission changes for accountability and troubleshooting.
+    
+    ```bash
+    # Use descriptive reasons for changes
+    /lp user <username> permission set lilchunks.admin true reason="Promoted to moderator"
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Troubleshooting Permissions
+
+<AccordionGroup>
+  <Accordion title="Commands Not Working" icon="exclamation-triangle">
+    **Problem**: User can't execute LilChunks commands
+    
+    **Solutions**:
+    1. Check if user has required permissions
+    2. Verify permission plugin is working
+    3. Test with OP status
+    4. Check for permission conflicts
+    5. Review server logs for errors
+  </Accordion>
+  
+  <Accordion title="Permission Denied Messages" icon="ban">
+    **Problem**: "You don't have permission" error
+    
+    **Solutions**:
+    1. Grant appropriate permission node
+    2. Check permission inheritance
+    3. Verify world/context restrictions
+    4. Clear permission cache if needed
+  </Accordion>
+  
+  <Accordion title="Inconsistent Behavior" icon="question">
+    **Problem**: Permissions work sometimes but not others
+    
+    **Solutions**:
+    1. Check for world-specific permissions
+    2. Review temporary permissions
+    3. Verify group inheritance
+    4. Check for conflicting plugins
+  </Accordion>
+</AccordionGroup>
+
+## Migration Between Permission Plugins
+
+If you're switching permission plugins, here's how to migrate LilChunks permissions:
+
+### From PermissionsEx to LuckPerms
+
+```bash
+# Export from PEX (if supported)
+/pex export
+
+# Import to LuckPerms
+/lp migration permissionsex
+
+# Verify permissions
+/lp group default permission info
+```
+
+### Manual Migration
+
+```bash
+# Note current permissions
+# PEX: /pex group <group> list
+# GM: /manload
+
+# Set up in new plugin
+/lp group default permission set lilchunks.use true
+/lp group admin permission set lilchunks.admin true
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Performance Guide"
+    icon="gauge-high"
+    href="/lilchunks/performance"
+  >
+    Optimize LilChunks performance settings
+  </Card>
+  <Card
+    title="Troubleshooting"
+    icon="wrench"
+    href="/lilchunks/troubleshooting"
+  >
+    Solve common permission and other issues
+  </Card>
+</CardGroup>

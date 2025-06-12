@@ -1,0 +1,617 @@
+---
+title: 'Performance Tuning'
+description: 'Optimize LilChunks for maximum performance and minimal server impact'
+icon: 'gauge-high'
+---
+
+# Performance Tuning
+
+Optimize LilChunks to achieve the best balance between generation speed and server performance.
+
+## Performance Overview
+
+LilChunks is designed to be highly performant, but proper configuration is essential for optimal results:
+
+<CardGroup cols={3}>
+  <Card title="CPU Usage" icon="microchip">
+    Multi-threaded generation with configurable thread count
+  </Card>
+  <Card title="Memory Management" icon="memory">
+    Smart memory usage with optional limits
+  </Card>
+  <Card title="Server Impact" icon="server">
+    Minimal TPS impact with async processing
+  </Card>
+</CardGroup>
+
+## Performance Metrics
+
+### Key Performance Indicators
+
+Monitor these metrics during chunk generation:
+
+<AccordionGroup>
+  <Accordion title="TPS (Ticks Per Second)" icon="clock">
+    **Target**: 20 TPS  
+    **Acceptable**: 18+ TPS  
+    **Critical**: Below 15 TPS
+    
+    ```bash
+    # Check TPS
+    /tps
+    
+    # Typical output during generation
+    TPS: 19.8, 19.5, 19.2 (1m, 5m, 15m avg)
+    ```
+    
+    <Warning>
+    If TPS drops below 15, reduce generation speed immediately.
+    </Warning>
+  </Accordion>
+  
+  <Accordion title="Memory Usage" icon="memory">
+    **Monitor**: Heap memory usage  
+    **Warning**: Above 80% usage  
+    **Critical**: Above 90% usage
+    
+    ```bash
+    # Check memory
+    /memory
+    
+    # Or use system commands
+    free -h
+    htop
+    ```
+  </Accordion>
+  
+  <Accordion title="Generation Speed" icon="bolt">
+    **Measurement**: Chunks per second  
+    **Typical Range**: 5-50 chunks/second  
+    **Depends On**: Server specs and configuration
+    
+    ```bash
+    # Check generation status
+    /lc status
+    # Shows: Speed: 12 chunks/second
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Configuration Optimization
+
+### Performance Profiles
+
+Choose a profile based on your server specifications:
+
+<Tabs>
+  <Tab title="High-End Server">
+    **Specs**: 8+ cores, 16+ GB RAM, NVMe SSD
+    
+    ```yaml
+    chunk-generation:
+      chunks-per-tick: 8
+      use-async: true
+      generate-structures: true
+      generate-caves: true
+      generate-features: true
+    
+    performance:
+      max-memory-usage: 0
+      use-parallel: true
+      thread-count: 0  # Auto-detect
+    
+    logging:
+      progress-interval: 3
+    ```
+    
+    **Expected Performance**: 30-50 chunks/second
+  </Tab>
+  
+  <Tab title="Mid-Range Server">
+    **Specs**: 4-6 cores, 8-12 GB RAM, SSD
+    
+    ```yaml
+    chunk-generation:
+      chunks-per-tick: 4
+      use-async: true
+      generate-structures: true
+      generate-caves: true
+      generate-features: true
+    
+    performance:
+      max-memory-usage: 2048
+      use-parallel: true
+      thread-count: 4
+    
+    logging:
+      progress-interval: 5
+    ```
+    
+    **Expected Performance**: 15-25 chunks/second
+  </Tab>
+  
+  <Tab title="Budget Server">
+    **Specs**: 2-4 cores, 4-6 GB RAM, HDD/SSD
+    
+    ```yaml
+    chunk-generation:
+      chunks-per-tick: 2
+      use-async: true
+      generate-structures: true
+      generate-caves: true
+      generate-features: true
+    
+    performance:
+      max-memory-usage: 1024
+      use-parallel: false
+      thread-count: 2
+    
+    logging:
+      progress-interval: 10
+    ```
+    
+    **Expected Performance**: 5-12 chunks/second
+  </Tab>
+  
+  <Tab title="Shared Hosting">
+    **Specs**: Limited resources, shared CPU
+    
+    ```yaml
+    chunk-generation:
+      chunks-per-tick: 1
+      use-async: true
+      generate-structures: false
+      generate-caves: false
+      generate-features: false
+    
+    performance:
+      max-memory-usage: 512
+      use-parallel: false
+      thread-count: 1
+    
+    logging:
+      progress-interval: 15
+    ```
+    
+    **Expected Performance**: 2-8 chunks/second
+  </Tab>
+</Tabs>
+
+### Fine-Tuning Parameters
+
+<AccordionGroup>
+  <Accordion title="chunks-per-tick" icon="clock">
+    **Impact**: Direct effect on generation speed and server load
+    
+    **Tuning Guide**:
+    - Start with default (4)
+    - Monitor TPS during generation
+    - Increase if TPS stays above 18
+    - Decrease if TPS drops below 16
+    
+    ```yaml
+    # Conservative (minimal lag)
+    chunks-per-tick: 1-2
+    
+    # Balanced (recommended)
+    chunks-per-tick: 3-5
+    
+    # Aggressive (high-end servers)
+    chunks-per-tick: 6-12
+    ```
+  </Accordion>
+  
+  <Accordion title="thread-count" icon="microchip">
+    **Impact**: CPU utilization and parallel processing
+    
+    **Recommendations**:
+    - `0`: Auto-detect (CPU cores - 1)
+    - `1`: Single-threaded (lowest impact)
+    - `2-4`: Good for most servers
+    - `6+`: High-end servers only
+    
+    ```yaml
+    # Let LilChunks decide (recommended)
+    thread-count: 0
+    
+    # Manual control
+    thread-count: 4  # For 6+ core servers
+    thread-count: 2  # For 4 core servers
+    thread-count: 1  # For 2 core servers
+    ```
+  </Accordion>
+  
+  <Accordion title="max-memory-usage" icon="memory">
+    **Impact**: Memory consumption and garbage collection
+    
+    **Guidelines**:
+    - `0`: No limit (high-end servers)
+    - `1024-2048`: Most servers
+    - `512-1024`: Budget servers
+    - `256-512`: Shared hosting
+    
+    ```yaml
+    # No memory limit (if you have plenty)
+    max-memory-usage: 0
+    
+    # Conservative limit
+    max-memory-usage: 1024  # 1GB
+    
+    # Strict limit
+    max-memory-usage: 512   # 512MB
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Real-Time Optimization
+
+### Dynamic Adjustment
+
+Monitor and adjust settings during generation:
+
+<Steps>
+  <Step title="Start Generation">
+    Begin with conservative settings:
+    ```bash
+    /lc start 10
+    ```
+  </Step>
+  
+  <Step title="Monitor Performance">
+    Check TPS and memory every 30 seconds:
+    ```bash
+    /tps
+    /memory
+    /lc status
+    ```
+  </Step>
+  
+  <Step title="Adjust if Needed">
+    If performance is good, increase speed:
+    ```yaml
+    # Edit config.yml
+    chunks-per-tick: 6  # Increase from 4
+    ```
+    ```bash
+    /lc reload
+    ```
+  </Step>
+  
+  <Step title="Continue Monitoring">
+    Keep watching performance and adjust as needed.
+  </Step>
+</Steps>
+
+### Performance Indicators
+
+<Tabs>
+  <Tab title="Good Performance">
+    ```
+    TPS: 19.8, 19.5, 19.2
+    Memory: 45% used
+    Generation: 15 chunks/second
+    ```
+    
+    **Action**: Consider increasing generation speed
+  </Tab>
+  
+  <Tab title="Acceptable Performance">
+    ```
+    TPS: 18.2, 17.8, 18.1
+    Memory: 65% used
+    Generation: 8 chunks/second
+    ```
+    
+    **Action**: Monitor closely, no changes needed
+  </Tab>
+  
+  <Tab title="Poor Performance">
+    ```
+    TPS: 14.5, 13.2, 15.1
+    Memory: 85% used
+    Generation: 3 chunks/second
+    ```
+    
+    **Action**: Reduce generation speed immediately
+  </Tab>
+</Tabs>
+
+## Server-Specific Optimizations
+
+### Paper Server
+
+Paper provides additional optimizations:
+
+```yaml
+# paper-world-defaults.yml
+chunks:
+  auto-save-interval: 6000  # Increase from default
+  delay-chunk-unloads-by: 10s
+  
+entities:
+  spawning:
+    per-player-mob-spawns: true
+    
+misc:
+  use-faster-eigencraft-redstone: true
+```
+
+### Spigot Server
+
+Spigot configuration tweaks:
+
+```yaml
+# spigot.yml
+world-settings:
+  default:
+    mob-spawn-range: 6  # Reduce from 8
+    entity-activation-range:
+      animals: 16
+      monsters: 24
+      raiders: 48
+      misc: 8
+```
+
+### JVM Optimization
+
+Optimize Java Virtual Machine settings:
+
+```bash
+# Recommended JVM flags for chunk generation
+java -Xms4G -Xmx8G \
+     -XX:+UseG1GC \
+     -XX:+ParallelRefProcEnabled \
+     -XX:MaxGCPauseMillis=200 \
+     -XX:+UnlockExperimentalVMOptions \
+     -XX:+DisableExplicitGC \
+     -XX:+AlwaysPreTouch \
+     -XX:G1NewSizePercent=30 \
+     -XX:G1MaxNewSizePercent=40 \
+     -XX:G1HeapRegionSize=8M \
+     -XX:G1ReservePercent=20 \
+     -XX:G1HeapWastePercent=5 \
+     -XX:G1MixedGCCountTarget=4 \
+     -XX:InitiatingHeapOccupancyPercent=15 \
+     -XX:G1MixedGCLiveThresholdPercent=90 \
+     -XX:G1RSetUpdatingPauseTimePercent=5 \
+     -XX:SurvivorRatio=32 \
+     -XX:+PerfDisableSharedMem \
+     -XX:MaxTenuringThreshold=1 \
+     -jar server.jar nogui
+```
+
+## Monitoring Tools
+
+### Built-in Monitoring
+
+Use LilChunks' built-in monitoring:
+
+```bash
+# Check generation status
+/lc status
+
+# Enable detailed logging temporarily
+# Edit config.yml:
+debug: true
+logging:
+  detailed-logs: true
+
+# Reload and monitor logs
+/lc reload
+```
+
+### External Monitoring
+
+<Tabs>
+  <Tab title="Server Plugins">
+    ```bash
+    # Install monitoring plugins
+    - LagMonitor
+    - Spark
+    - ServerUtils
+    - TPS Monitor
+    
+    # Use commands
+    /spark profiler start
+    /lagmonitor
+    /tps
+    ```
+  </Tab>
+  
+  <Tab title="System Tools">
+    ```bash
+    # Linux monitoring
+    htop          # CPU and memory usage
+    iotop         # Disk I/O
+    nethogs       # Network usage
+    
+    # Windows monitoring
+    Task Manager
+    Resource Monitor
+    Performance Monitor
+    ```
+  </Tab>
+  
+  <Tab title="Java Profiling">
+    ```bash
+    # JVM monitoring
+    jstat -gc <pid>     # Garbage collection
+    jmap -histo <pid>   # Memory histogram
+    jstack <pid>        # Thread dump
+    
+    # Or use VisualVM, JProfiler
+    ```
+  </Tab>
+</Tabs>
+
+## Troubleshooting Performance Issues
+
+<AccordionGroup>
+  <Accordion title="Low TPS During Generation" icon="clock">
+    **Symptoms**: TPS drops below 15 during chunk generation
+    
+    **Solutions**:
+    1. Reduce `chunks-per-tick` to 1-2
+    2. Disable parallel processing
+    3. Set memory limits
+    4. Reduce thread count
+    5. Disable structure/feature generation
+    
+    ```yaml
+    chunk-generation:
+      chunks-per-tick: 1
+      generate-structures: false
+      generate-features: false
+    performance:
+      use-parallel: false
+      thread-count: 1
+    ```
+  </Accordion>
+  
+  <Accordion title="High Memory Usage" icon="memory">
+    **Symptoms**: Memory usage above 80%, frequent GC pauses
+    
+    **Solutions**:
+    1. Set strict memory limits
+    2. Reduce generation speed
+    3. Increase heap size
+    4. Optimize JVM flags
+    
+    ```yaml
+    performance:
+      max-memory-usage: 1024  # 1GB limit
+    chunk-generation:
+      chunks-per-tick: 2      # Reduce speed
+    ```
+  </Accordion>
+  
+  <Accordion title="Slow Generation Speed" icon="turtle">
+    **Symptoms**: Very slow chunk generation (< 5 chunks/second)
+    
+    **Solutions**:
+    1. Check disk I/O performance
+    2. Verify async is enabled
+    3. Increase thread count
+    4. Check for plugin conflicts
+    
+    ```yaml
+    chunk-generation:
+      use-async: true
+      chunks-per-tick: 4
+    performance:
+      use-parallel: true
+      thread-count: 0  # Auto-detect
+    ```
+  </Accordion>
+  
+  <Accordion title="Server Freezing" icon="snowflake">
+    **Symptoms**: Server becomes unresponsive during generation
+    
+    **Solutions**:
+    1. Stop generation immediately
+    2. Use minimal settings
+    3. Check for deadlocks
+    4. Review server logs
+    
+    ```bash
+    # Emergency stop
+    /lc stop
+    
+    # Use minimal settings
+    chunks-per-tick: 1
+    use-parallel: false
+    thread-count: 1
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Performance Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Start Conservative" icon="shield">
+    Begin with lower settings and gradually increase based on performance monitoring.
+  </Card>
+  <Card title="Monitor Continuously" icon="chart-line">
+    Keep an eye on TPS, memory, and generation speed throughout the process.
+  </Card>
+  <Card title="Off-Peak Generation" icon="moon">
+    Run large pregeneration tasks during low-activity periods.
+  </Card>
+  <Card title="Backup Before Large Tasks" icon="floppy-disk">
+    Always backup your world before running extensive pregeneration.
+  </Card>
+  <Card title="Test Configuration" icon="flask">
+    Test new configurations on a development server first.
+  </Card>
+  <Card title="Document Settings" icon="file-text">
+    Keep notes on what settings work best for your server setup.
+  </Card>
+</CardGroup>
+
+## Performance Benchmarks
+
+### Typical Performance Ranges
+
+Based on server specifications:
+
+| Server Type | CPU Cores | RAM | Storage | Expected Speed |
+|-------------|-----------|-----|---------|----------------|
+| High-End Dedicated | 8+ | 16+ GB | NVMe SSD | 30-50 chunks/s |
+| Mid-Range VPS | 4-6 | 8-12 GB | SSD | 15-25 chunks/s |
+| Budget VPS | 2-4 | 4-6 GB | SSD/HDD | 5-12 chunks/s |
+| Shared Hosting | 1-2 | 2-4 GB | HDD | 2-8 chunks/s |
+
+### Optimization Results
+
+Example of optimization impact:
+
+<Tabs>
+  <Tab title="Before Optimization">
+    ```
+    Configuration:
+    - chunks-per-tick: 4 (default)
+    - use-parallel: true
+    - thread-count: 0
+    - No memory limit
+    
+    Results:
+    - TPS: 12-15 (poor)
+    - Memory: 90% usage
+    - Speed: 3 chunks/second
+    ```
+  </Tab>
+  
+  <Tab title="After Optimization">
+    ```
+    Configuration:
+    - chunks-per-tick: 2 (reduced)
+    - use-parallel: false
+    - thread-count: 2
+    - max-memory-usage: 1024
+    
+    Results:
+    - TPS: 18-19 (good)
+    - Memory: 65% usage
+    - Speed: 8 chunks/second
+    ```
+  </Tab>
+</Tabs>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Troubleshooting Guide"
+    icon="wrench"
+    href="/lilchunks/troubleshooting"
+  >
+    Solve common performance and other issues
+  </Card>
+  <Card
+    title="API Documentation"
+    icon="code"
+    href="/lilchunks/api"
+  >
+    Integrate LilChunks with other plugins
+  </Card>
+</CardGroup>
