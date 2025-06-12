@@ -1,0 +1,487 @@
+---
+title: 'Commands Reference'
+description: 'Complete reference for all LilChunks commands'
+icon: 'terminal'
+---
+
+# Commands Reference
+
+Complete guide to all LilChunks commands, their usage, and examples.
+
+## Command Overview
+
+LilChunks provides a simple yet powerful command interface with multiple aliases for convenience:
+
+<CardGroup cols={3}>
+  <Card title="Primary" icon="terminal">
+    `/lilchunks`
+  </Card>
+  <Card title="Short Alias" icon="bolt">
+    `/lc`
+  </Card>
+  <Card title="Alternative" icon="cubes">
+    `/chunks`
+  </Card>
+</CardGroup>
+
+<Note>
+All examples in this guide use `/lc` for brevity, but you can use any of the three command forms.
+</Note>
+
+## Command Structure
+
+```bash
+/lc <subcommand> [arguments] [options]
+```
+
+### Available Subcommands
+
+| Command | Description | Permission Required |
+|---------|-------------|-------------------|
+| `start` | Start chunk pregeneration | `lilchunks.admin` |
+| `stop` | Stop chunk pregeneration | `lilchunks.admin` |
+| `status` | Check generation status | `lilchunks.use` |
+| `reload` | Reload configuration | `lilchunks.admin` |
+| `help` | Show help information | `lilchunks.use` |
+
+## Detailed Command Reference
+
+### Start Command
+
+Start chunk pregeneration around your current location or a specified area.
+
+#### Syntax
+```bash
+/lc start <radius> [world]
+```
+
+#### Parameters
+- **radius** (required): Number of chunks to generate in each direction
+- **world** (optional): Target world name (console only)
+
+#### Examples
+
+<Tabs>
+  <Tab title="In-Game">
+    ```bash
+    # Start with 5 chunk radius
+    /lc start 5
+    
+    # Start with 10 chunk radius
+    /lc start 10
+    
+    # Start with 25 chunk radius
+    /lc start 25
+    ```
+  </Tab>
+  <Tab title="Console">
+    ```bash
+    # Start in specific world
+    lc start 10 world
+    lc start 15 world_nether
+    lc start 5 creative_world
+    ```
+  </Tab>
+</Tabs>
+
+#### Radius Guidelines
+
+<AccordionGroup>
+  <Accordion title="Small (1-10 chunks)" icon="circle">
+    **Use Cases**: Spawn protection, small bases, testing
+    
+    **Chunks Generated**: 9-441 chunks
+    
+    **Time Estimate**: 30 seconds - 2 minutes
+    
+    ```bash
+    /lc start 5   # 11x11 = 121 chunks
+    /lc start 10  # 21x21 = 441 chunks
+    ```
+  </Accordion>
+  
+  <Accordion title="Medium (11-25 chunks)" icon="circle-dot">
+    **Use Cases**: Towns, large bases, faction areas
+    
+    **Chunks Generated**: 529-2,601 chunks
+    
+    **Time Estimate**: 2-10 minutes
+    
+    ```bash
+    /lc start 15  # 31x31 = 961 chunks
+    /lc start 25  # 51x51 = 2,601 chunks
+    ```
+  </Accordion>
+  
+  <Accordion title="Large (26-50 chunks)" icon="bullseye">
+    **Use Cases**: World borders, major areas
+    
+    **Chunks Generated**: 2,809-10,201 chunks
+    
+    **Time Estimate**: 10-45 minutes
+    
+    ```bash
+    /lc start 30  # 61x61 = 3,721 chunks
+    /lc start 50  # 101x101 = 10,201 chunks
+    ```
+  </Accordion>
+  
+  <Accordion title="Massive (51+ chunks)" icon="expand">
+    **Use Cases**: Full world pregeneration
+    
+    **Chunks Generated**: 10,000+ chunks
+    
+    **Time Estimate**: 45+ minutes
+    
+    ```bash
+    /lc start 100  # 201x201 = 40,401 chunks
+    /lc start 200  # 401x401 = 160,801 chunks
+    ```
+    
+    <Warning>
+    Large pregeneration tasks require significant server resources and time. Monitor performance carefully.
+    </Warning>
+  </Accordion>
+</AccordionGroup>
+
+#### Success Response
+```
+✓ Started chunk generation in a 10 chunk radius.
+```
+
+#### Error Responses
+```
+✗ Invalid radius. Please use a positive number.
+✗ Chunk generation is already in progress for this world.
+✗ Failed to start chunk generation.
+```
+
+### Stop Command
+
+Stop active chunk pregeneration in the current or specified world.
+
+#### Syntax
+```bash
+/lc stop [world]
+```
+
+#### Parameters
+- **world** (optional): Target world name (required for console)
+
+#### Examples
+
+<Tabs>
+  <Tab title="In-Game">
+    ```bash
+    # Stop generation in current world
+    /lc stop
+    ```
+  </Tab>
+  <Tab title="Console">
+    ```bash
+    # Stop generation in specific world
+    lc stop world
+    lc stop world_nether
+    lc stop creative_world
+    ```
+  </Tab>
+</Tabs>
+
+#### Success Response
+```
+✓ Stopped chunk generation for world: world
+```
+
+#### Error Response
+```
+⚠ No active generation found for world: world
+```
+
+<Tip>
+Always stop pregeneration gracefully before restarting your server to avoid potential issues.
+</Tip>
+
+### Status Command
+
+Check the current status of chunk pregeneration in your world.
+
+#### Syntax
+```bash
+/lc status [world]
+```
+
+#### Parameters
+- **world** (optional): Target world name (required for console)
+
+#### Examples
+
+<Tabs>
+  <Tab title="In-Game">
+    ```bash
+    # Check status in current world
+    /lc status
+    ```
+  </Tab>
+  <Tab title="Console">
+    ```bash
+    # Check status in specific world
+    lc status world
+    lc status world_nether
+    ```
+  </Tab>
+</Tabs>
+
+#### Response Examples
+
+<Tabs>
+  <Tab title="Active Generation">
+    ```
+    Generation Status for world:
+    » Status: Running
+    » Progress: 156/441 chunks (35%)
+    » Estimated Time: 2m 15s
+    » Speed: 12 chunks/second
+    ```
+  </Tab>
+  <Tab title="No Generation">
+    ```
+    ⚠ No active generation for world: world
+    ```
+  </Tab>
+  <Tab title="Completed">
+    ```
+    Generation Status for world:
+    » Status: Completed
+    » Total chunks: 441
+    » Time taken: 3m 45s
+    ```
+  </Tab>
+</Tabs>
+
+### Reload Command
+
+Reload the LilChunks configuration without restarting the server.
+
+#### Syntax
+```bash
+/lc reload
+```
+
+#### Examples
+```bash
+# Reload configuration
+/lc reload
+```
+
+#### Success Response
+```
+✓ Configuration reloaded successfully.
+```
+
+<Note>
+The reload command applies most configuration changes immediately, but some changes may require a server restart.
+</Note>
+
+### Help Command
+
+Display help information and available commands.
+
+#### Syntax
+```bash
+/lc help
+```
+
+#### Examples
+```bash
+# Show help
+/lc help
+/lilchunks help
+/chunks help
+```
+
+#### Response
+```
+LilChunks Help:
+» /lilchunks start [radius] - Start chunk generation
+» /lilchunks stop [world] - Stop chunk generation  
+» /lilchunks status [world] - Check generation status
+» /lilchunks reload - Reload configuration
+» /lilchunks help - Show this help message
+```
+
+## Tab Completion
+
+LilChunks provides intelligent tab completion for all commands and parameters:
+
+### Command Completion
+```bash
+/lc <TAB>
+# Suggests: start, stop, status, reload, help
+```
+
+### Radius Completion
+```bash
+/lc start <TAB>
+# Suggests: 5, 10, 20, 50
+```
+
+### World Completion
+```bash
+/lc stop <TAB>
+# Suggests: world, world_nether, world_the_end, [custom worlds]
+```
+
+## Permission-Based Usage
+
+### Basic User (`lilchunks.use`)
+```bash
+/lc status    ✓ Allowed
+/lc help      ✓ Allowed
+/lc start     ✗ Denied
+/lc stop      ✗ Denied
+/lc reload    ✗ Denied
+```
+
+### Administrator (`lilchunks.admin`)
+```bash
+/lc status    ✓ Allowed
+/lc help      ✓ Allowed
+/lc start     ✓ Allowed
+/lc stop      ✓ Allowed
+/lc reload    ✓ Allowed
+```
+
+<Note>
+The `lilchunks.admin` permission includes all `lilchunks.use` permissions.
+</Note>
+
+## Console vs In-Game Usage
+
+### In-Game Commands
+When used by players in-game:
+- World parameter is optional (uses current world)
+- Player location is used for generation center
+- Colorful chat messages with formatting
+
+### Console Commands
+When used from server console:
+- World parameter is required for stop/status commands
+- Generation center must be specified or uses world spawn
+- Plain text output without color formatting
+
+<Tabs>
+  <Tab title="Player Usage">
+    ```bash
+    # Player at spawn in "world"
+    /lc start 10        # Generates around player location
+    /lc status          # Checks current world
+    /lc stop            # Stops current world
+    ```
+  </Tab>
+  <Tab title="Console Usage">
+    ```bash
+    # Console commands
+    lc start 10 world   # Must specify world
+    lc status world     # Must specify world  
+    lc stop world       # Must specify world
+    ```
+  </Tab>
+</Tabs>
+
+## Advanced Usage Examples
+
+### Batch Operations
+```bash
+# Start generation in multiple worlds
+lc start 15 world
+lc start 10 world_nether
+lc start 5 world_the_end
+
+# Check all world statuses
+lc status world
+lc status world_nether
+lc status world_the_end
+```
+
+### Scheduled Generation
+```bash
+# Using server scheduling or cron
+# Generate during off-peak hours
+0 2 * * * lc start 50 world
+0 3 * * * lc stop world
+```
+
+### Performance Monitoring
+```bash
+# Monitor generation with status checks
+/lc start 25
+# Wait 30 seconds
+/lc status
+# Check TPS: /tps
+# Adjust if needed: /lc stop
+```
+
+## Error Handling
+
+LilChunks provides clear error messages for common issues:
+
+### Permission Errors
+```
+✗ You don't have permission to use this command.
+```
+**Solution**: Grant appropriate permissions or use OP
+
+### Invalid Parameters
+```
+✗ Invalid radius. Please use a positive number.
+✗ Please specify a valid world.
+```
+**Solution**: Check command syntax and parameters
+
+### Generation Conflicts
+```
+✗ Chunk generation is already in progress for this world.
+```
+**Solution**: Stop existing generation first or wait for completion
+
+### Server Issues
+```
+✗ Failed to start chunk generation.
+```
+**Solution**: Check server logs, verify world accessibility, try smaller radius
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Start Small" icon="seedling">
+    Begin with small radius values to test performance and understand impact.
+  </Card>
+  <Card title="Monitor Progress" icon="chart-line">
+    Use `/lc status` regularly to monitor generation progress and performance.
+  </Card>
+  <Card title="Graceful Stops" icon="hand">
+    Always use `/lc stop` before server restarts or maintenance.
+  </Card>
+  <Card title="Off-Peak Hours" icon="moon">
+    Run large pregeneration tasks during low-activity periods.
+  </Card>
+</CardGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Permissions Guide"
+    icon="key"
+    href="/lilchunks/permissions"
+  >
+    Learn about LilChunks permission system
+  </Card>
+  <Card
+    title="Performance Tuning"
+    icon="gauge-high"
+    href="/lilchunks/performance"
+  >
+    Optimize commands for better performance
+  </Card>
+</CardGroup>

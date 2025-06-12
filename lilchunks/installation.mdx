@@ -1,0 +1,312 @@
+---
+title: 'Installation'
+description: 'How to install and set up LilChunks on your Minecraft server'
+icon: 'download'
+---
+
+# Installing LilChunks
+
+Get LilChunks up and running on your Minecraft server in just a few minutes.
+
+## Requirements
+
+Before installing LilChunks, ensure your server meets these requirements:
+
+<CardGroup cols={3}>
+  <Card title="Java Version" icon="coffee">
+    **Java 17** or higher
+  </Card>
+  <Card title="Minecraft Version" icon="cube">
+    **1.16.5** to **1.21.5**
+  </Card>
+  <Card title="Server Software" icon="server">
+    **Bukkit**, **Spigot**, or **Paper**
+  </Card>
+</CardGroup>
+
+<Warning>
+LilChunks requires **Java 17** or higher. Older Java versions are not supported.
+</Warning>
+
+## Download
+
+<Steps>
+  <Step title="Get the Latest Release">
+    Download the latest version of LilChunks from the official sources:
+    
+    <CardGroup cols={2}>
+      <Card title="GitHub Releases" icon="github" href="https://github.com/hydr4/LilChunks/releases">
+        Download from GitHub releases page
+      </Card>
+      <Card title="Hydr4 Plugins" icon="globe" href="https://plugins.hydr4.org/lilchunks">
+        Download from official plugin hub
+      </Card>
+    </CardGroup>
+  </Step>
+  
+  <Step title="Verify Download">
+    Ensure you downloaded the correct file:
+    - File name: `lilchunks-x.x.x.jar`
+    - File size: ~150KB
+    - No additional dependencies required
+  </Step>
+</Steps>
+
+## Installation Process
+
+<Steps>
+  <Step title="Stop Your Server">
+    Before installing any plugin, it's recommended to stop your Minecraft server:
+    
+    ```bash
+    # In server console
+    stop
+    ```
+    
+    <Note>
+    You can also install LilChunks while the server is running using a plugin manager, but stopping is safer.
+    </Note>
+  </Step>
+  
+  <Step title="Upload the Plugin">
+    Place the `lilchunks-x.x.x.jar` file in your server's `plugins` directory:
+    
+    ```
+    your-server/
+    ├── plugins/
+    │   ├── lilchunks-1.1.0.jar  ← Place here
+    │   └── other-plugins.jar
+    ├── world/
+    └── server.jar
+    ```
+  </Step>
+  
+  <Step title="Start Your Server">
+    Start your Minecraft server to load LilChunks:
+    
+    ```bash
+    # Start your server
+    java -jar server.jar
+    ```
+    
+    You should see LilChunks initialization messages in the console.
+  </Step>
+  
+  <Step title="Verify Installation">
+    Check that LilChunks loaded successfully:
+    
+    ```bash
+    # In server console
+    plugins
+    ```
+    
+    You should see LilChunks listed in green, indicating it's enabled.
+  </Step>
+</Steps>
+
+## First Launch
+
+When LilChunks starts for the first time, you'll see colorful initialization messages:
+
+```
+[INFO] ╭─────────────────────────────────╮
+[INFO] │        LilChunks Pre-Init       │
+[INFO] ╰─────────────────────────────────╯
+
+[INFO] ╭─────────────────────────────────╮
+[INFO] │      LilChunks v1.1.0           │
+[INFO] │                                 │
+[INFO] │ » Status: ENABLED               │
+[INFO] │ » Server: 1.20.4-R0.1-SNAPSHOT │
+[INFO] │ » Author: Hydr4                 │
+[INFO] ╰─────────────────────────────────╯
+```
+
+<Tip>
+The colorful boxes indicate that LilChunks has loaded successfully and is ready to use!
+</Tip>
+
+## Configuration Files
+
+After the first launch, LilChunks will create its configuration files:
+
+```
+plugins/
+└── LilChunks/
+    ├── config.yml      ← Main configuration
+    └── data/           ← Plugin data storage
+```
+
+### Default Configuration
+
+LilChunks creates a `config.yml` file with sensible defaults:
+
+```yaml
+# Debug mode - enables additional logging
+debug: false
+
+# Chunk generation settings
+chunk-generation:
+  chunks-per-tick: 4
+  use-async: true
+  generate-structures: true
+  generate-caves: true
+  generate-features: true
+
+# Performance settings
+performance:
+  max-memory-usage: 0
+  use-parallel: true
+  thread-count: 0
+
+# Logging settings
+logging:
+  log-progress: true
+  progress-interval: 5
+  detailed-logs: false
+```
+
+<Note>
+The default configuration is optimized for most servers. You can customize it later based on your needs.
+</Note>
+
+## Verification
+
+### Test Basic Commands
+
+Verify the installation by testing basic commands:
+
+<Tabs>
+  <Tab title="In-Game">
+    ```
+    /lilchunks help
+    /lc help
+    /chunks help
+    ```
+  </Tab>
+  <Tab title="Console">
+    ```
+    lilchunks help
+    lc help
+    chunks help
+    ```
+  </Tab>
+</Tabs>
+
+### Check Permissions
+
+Ensure permissions are working correctly:
+
+```bash
+# Check if you have admin permissions
+/lilchunks reload
+
+# Check basic permissions
+/lilchunks status
+```
+
+## Troubleshooting Installation
+
+<AccordionGroup>
+  <Accordion title="Plugin Not Loading" icon="exclamation-triangle">
+    **Symptoms**: LilChunks doesn't appear in `/plugins` list
+    
+    **Solutions**:
+    - Verify Java 17+ is installed: `java -version`
+    - Check server logs for error messages
+    - Ensure the jar file isn't corrupted (re-download)
+    - Verify server software compatibility (Bukkit/Spigot/Paper)
+  </Accordion>
+  
+  <Accordion title="Permission Errors" icon="lock">
+    **Symptoms**: "You don't have permission" messages
+    
+    **Solutions**:
+    - Grant yourself admin permissions: `/lp user <name> permission set lilchunks.admin true`
+    - Or use OP permissions: `/op <username>`
+    - Check your permission plugin configuration
+  </Accordion>
+  
+  <Accordion title="Version Compatibility" icon="code-branch">
+    **Symptoms**: "This version of Minecraft is not supported" error
+    
+    **Solutions**:
+    - Verify your Minecraft version is 1.16.5 or higher
+    - Update your server software to a supported version
+    - Check the compatibility matrix in our documentation
+  </Accordion>
+  
+  <Accordion title="Configuration Issues" icon="gear">
+    **Symptoms**: Plugin loads but behaves unexpectedly
+    
+    **Solutions**:
+    - Delete `plugins/LilChunks/config.yml` to regenerate defaults
+    - Check configuration syntax with a YAML validator
+    - Review the configuration guide for proper values
+  </Accordion>
+</AccordionGroup>
+
+## Alternative Installation Methods
+
+### Plugin Managers
+
+If you're using a plugin manager, you can install LilChunks without stopping the server:
+
+<Tabs>
+  <Tab title="PlugMan">
+    ```bash
+    /plugman load LilChunks
+    ```
+  </Tab>
+  <Tab title="ServerUtils">
+    ```bash
+    /su plugin load LilChunks
+    ```
+  </Tab>
+  <Tab title="Manual Hot-Load">
+    ```bash
+    # Place jar in plugins folder, then:
+    /reload confirm
+    ```
+    
+    <Warning>
+    Using `/reload` can cause issues with some plugins. Use with caution.
+    </Warning>
+  </Tab>
+</Tabs>
+
+### Docker Installations
+
+For Docker-based servers, mount the plugins directory:
+
+```dockerfile
+# In your Dockerfile or docker-compose.yml
+volumes:
+  - ./plugins:/opt/minecraft/plugins
+  - ./lilchunks-config:/opt/minecraft/plugins/LilChunks
+```
+
+## Next Steps
+
+Now that LilChunks is installed, you're ready to start using it:
+
+<CardGroup cols={2}>
+  <Card
+    title="Quick Start Guide"
+    icon="rocket"
+    href="/lilchunks/quick-start"
+  >
+    Learn the basics and start your first pregeneration
+  </Card>
+  <Card
+    title="Configuration"
+    icon="gear"
+    href="/lilchunks/configuration"
+  >
+    Customize LilChunks for your server
+  </Card>
+</CardGroup>
+
+<Tip>
+Join our community for support and updates! Check the main documentation page for Discord and GitHub links.
+</Tip>

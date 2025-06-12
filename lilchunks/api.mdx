@@ -1,0 +1,638 @@
+---
+title: 'API Documentation'
+description: 'Developer API for integrating with LilChunks'
+icon: 'code'
+---
+
+# API Documentation
+
+Learn how to integrate with LilChunks using its developer API for custom plugins and extensions.
+
+<Note>
+The LilChunks API is designed for developers who want to integrate chunk pregeneration functionality into their own plugins or create extensions for LilChunks.
+</Note>
+
+## Getting Started
+
+### Adding LilChunks as Dependency
+
+Add LilChunks to your plugin's dependencies:
+
+<Tabs>
+  <Tab title="Maven">
+    ```xml
+    <dependencies>
+        <dependency>
+            <groupId>org.hydr4</groupId>
+            <artifactId>lilchunks</artifactId>
+            <version>1.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+    ```
+  </Tab>
+  
+  <Tab title="Gradle">
+    ```gradle
+    dependencies {
+        compileOnly 'org.hydr4:lilchunks:1.1.0'
+    }
+    ```
+  </Tab>
+  
+  <Tab title="plugin.yml">
+    ```yaml
+    name: YourPlugin
+    version: 1.0.0
+    main: com.yourplugin.Main
+    depend: [LilChunks]  # Hard dependency
+    # OR
+    softdepend: [LilChunks]  # Soft dependency
+    ```
+  </Tab>
+</Tabs>
+
+### Basic API Access
+
+Get the LilChunks API instance:
+
+```java
+import org.hydr4.lilchunks.LilChunks;
+import org.hydr4.lilchunks.generator.GenerationManager;
+
+public class YourPlugin extends JavaPlugin {
+    private LilChunks lilChunks;
+    private GenerationManager generationManager;
+    
+    @Override
+    public void onEnable() {
+        // Get LilChunks instance
+        lilChunks = LilChunks.getInstance();
+        
+        if (lilChunks == null) {
+            getLogger().warning("LilChunks not found!");
+            return;
+        }
+        
+        // Get generation manager
+        generationManager = lilChunks.getGenerationManager();
+        
+        getLogger().info("Successfully hooked into LilChunks!");
+    }
+}
+```
+
+## Core API Classes
+
+### LilChunks Main Class
+
+The main plugin class provides access to all LilChunks functionality:
+
+```java
+public class LilChunks extends JavaPlugin {
+    // Get the singleton instance
+    public static LilChunks getInstance()
+    
+    // Get the generation manager
+    public GenerationManager getGenerationManager()
+    
+    // Get the custom logger
+    public Logger getCustomLogger()
+    
+    // Check if debug mode is enabled
+    public boolean isDebug()
+}
+```
+
+### GenerationManager
+
+Manages all chunk generation operations:
+
+```java
+public class GenerationManager {
+    // Start generation in a world
+    public boolean startGeneration(World world, Location center, int radius)
+    
+    // Stop generation in a world
+    public boolean stopGeneration(World world)
+    
+    // Stop all generation tasks
+    public void stopAll()
+    
+    // Check if generation is running in a world
+    public boolean isGenerating(World world)
+    
+    // Get the generator for a world
+    public ChunkGenerator getGenerator(World world)
+    
+    // Get generation status for a world
+    public GenerationStatus getStatus(World world)
+}
+```
+
+### GenerationStatus
+
+Provides information about ongoing generation:
+
+```java
+public class GenerationStatus {
+    // Check if generation is currently running
+    public boolean isRunning()
+    
+    // Get number of chunks generated
+    public int getChunksGenerated()
+    
+    // Get total number of chunks to generate
+    public int getChunksTotal()
+    
+    // Get generation progress as percentage
+    public double getProgress()
+    
+    // Get generation speed (chunks per second)
+    public double getSpeed()
+    
+    // Get estimated time remaining
+    public long getEstimatedTimeRemaining()
+}
+```
+
+## API Usage Examples
+
+### Starting Generation Programmatically
+
+```java
+import org.bukkit.World;
+import org.bukkit.Location;
+import org.hydr4.lilchunks.LilChunks;
+import org.hydr4.lilchunks.generator.GenerationManager;
+
+public void startPregeneration(World world, Location center, int radius) {
+    GenerationManager manager = LilChunks.getInstance().getGenerationManager();
+    
+    // Check if generation is already running
+    if (manager.isGenerating(world)) {
+        getLogger().warning("Generation already running in " + world.getName());
+        return;
+    }
+    
+    // Start generation
+    boolean success = manager.startGeneration(world, center, radius);
+    
+    if (success) {
+        getLogger().info("Started pregeneration in " + world.getName());
+    } else {
+        getLogger().warning("Failed to start pregeneration");
+    }
+}
+```
+
+### Monitoring Generation Progress
+
+```java
+import org.hydr4.lilchunks.generator.GenerationStatus;
+
+public void monitorGeneration(World world) {
+    GenerationManager manager = LilChunks.getInstance().getGenerationManager();
+    GenerationStatus status = manager.getStatus(world);
+    
+    if (status == null) {
+        getLogger().info("No active generation in " + world.getName());
+        return;
+    }
+    
+    // Get progress information
+    int generated = status.getChunksGenerated();
+    int total = status.getChunksTotal();
+    double progress = status.getProgress();
+    double speed = status.getSpeed();
+    long timeRemaining = status.getEstimatedTimeRemaining();
+    
+    getLogger().info(String.format(
+        "Generation Progress: %d/%d chunks (%.1f%%) - %.1f chunks/s - %ds remaining",
+        generated, total, progress, speed, timeRemaining / 1000
+    ));
+}
+```
+
+### Stopping Generation
+
+```java
+public void stopGeneration(World world) {
+    GenerationManager manager = LilChunks.getInstance().getGenerationManager();
+    
+    boolean stopped = manager.stopGeneration(world);
+    
+    if (stopped) {
+        getLogger().info("Stopped generation in " + world.getName());
+    } else {
+        getLogger().info("No active generation found in " + world.getName());
+    }
+}
+
+public void stopAllGeneration() {
+    GenerationManager manager = LilChunks.getInstance().getGenerationManager();
+    manager.stopAll();
+    getLogger().info("Stopped all generation tasks");
+}
+```
+
+## Event System
+
+### Custom Events
+
+LilChunks fires custom events that you can listen to:
+
+```java
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.hydr4.lilchunks.events.GenerationStartEvent;
+import org.hydr4.lilchunks.events.GenerationCompleteEvent;
+import org.hydr4.lilchunks.events.GenerationStopEvent;
+
+public class LilChunksListener implements Listener {
+    
+    @EventHandler
+    public void onGenerationStart(GenerationStartEvent event) {
+        World world = event.getWorld();
+        int radius = event.getRadius();
+        Location center = event.getCenter();
+        
+        getLogger().info("Generation started in " + world.getName() + 
+                        " with radius " + radius);
+    }
+    
+    @EventHandler
+    public void onGenerationComplete(GenerationCompleteEvent event) {
+        World world = event.getWorld();
+        int chunksGenerated = event.getChunksGenerated();
+        long duration = event.getDuration();
+        
+        getLogger().info("Generation completed in " + world.getName() + 
+                        ": " + chunksGenerated + " chunks in " + 
+                        (duration / 1000) + " seconds");
+    }
+    
+    @EventHandler
+    public void onGenerationStop(GenerationStopEvent event) {
+        World world = event.getWorld();
+        boolean wasCompleted = event.wasCompleted();
+        
+        if (wasCompleted) {
+            getLogger().info("Generation completed in " + world.getName());
+        } else {
+            getLogger().info("Generation stopped early in " + world.getName());
+        }
+    }
+}
+```
+
+### Event Registration
+
+Register your event listener:
+
+```java
+@Override
+public void onEnable() {
+    // Register event listener
+    getServer().getPluginManager().registerEvents(new LilChunksListener(), this);
+}
+```
+
+## Advanced Integration
+
+### Custom Generation Settings
+
+Create custom generation settings for your plugin:
+
+```java
+import org.hydr4.lilchunks.generator.GenerationSettings;
+
+public void createCustomGeneration(World world, Location center) {
+    // Create custom settings
+    GenerationSettings settings = new GenerationSettings(LilChunks.getInstance());
+    
+    // Customize settings (if API allows)
+    // settings.setChunksPerTick(2);
+    // settings.setGenerateStructures(false);
+    
+    // Start generation with custom settings
+    GenerationManager manager = LilChunks.getInstance().getGenerationManager();
+    
+    // Note: Current API may not support custom settings
+    // This is a conceptual example for future API versions
+    boolean success = manager.startGeneration(world, center, 10);
+}
+```
+
+### Integration with Other Plugins
+
+#### WorldEdit Integration
+
+```java
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.regions.Region;
+
+public void pregenerateRegion(Player player, Region region) {
+    World world = BukkitAdapter.adapt(region.getWorld());
+    
+    // Calculate center and radius from region
+    Vector3 center = region.getCenter();
+    Location centerLoc = new Location(world, center.getX(), center.getY(), center.getZ());
+    
+    // Estimate radius (simplified)
+    int radius = (int) Math.max(region.getWidth(), region.getLength()) / 32; // 32 blocks per chunk
+    
+    // Start generation
+    GenerationManager manager = LilChunks.getInstance().getGenerationManager();
+    manager.startGeneration(world, centerLoc, radius);
+    
+    player.sendMessage("Started pregeneration for selected region");
+}
+```
+
+#### PlaceholderAPI Integration
+
+```java
+import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+
+public class LilChunksPlaceholders extends PlaceholderExpansion {
+    
+    @Override
+    public String getIdentifier() {
+        return "lilchunks";
+    }
+    
+    @Override
+    public String getAuthor() {
+        return "YourName";
+    }
+    
+    @Override
+    public String getVersion() {
+        return "1.0.0";
+    }
+    
+    @Override
+    public String onPlaceholderRequest(Player player, String params) {
+        if (player == null) return "";
+        
+        GenerationManager manager = LilChunks.getInstance().getGenerationManager();
+        World world = player.getWorld();
+        
+        switch (params.toLowerCase()) {
+            case "is_generating":
+                return String.valueOf(manager.isGenerating(world));
+                
+            case "progress":
+                GenerationStatus status = manager.getStatus(world);
+                return status != null ? String.format("%.1f", status.getProgress()) : "0";
+                
+            case "chunks_generated":
+                GenerationStatus status2 = manager.getStatus(world);
+                return status2 != null ? String.valueOf(status2.getChunksGenerated()) : "0";
+                
+            case "speed":
+                GenerationStatus status3 = manager.getStatus(world);
+                return status3 != null ? String.format("%.1f", status3.getSpeed()) : "0";
+        }
+        
+        return null;
+    }
+}
+```
+
+## Utility Classes
+
+### ColorUtil
+
+Access LilChunks' color utilities:
+
+```java
+import org.hydr4.lilchunks.utils.ColorUtil;
+
+public void sendColoredMessage(Player player, String message) {
+    // Translate color codes
+    String colored = ColorUtil.translate(ColorUtil.GREEN + message);
+    player.sendMessage(colored);
+    
+    // Create colored boxes (console)
+    String[] box = ColorUtil.createBox("My Plugin", ColorUtil.AQUA);
+    for (String line : box) {
+        getLogger().info(ColorUtil.convertToAnsi(line));
+    }
+}
+```
+
+### Logger Integration
+
+Use LilChunks' logger for consistent formatting:
+
+```java
+import org.hydr4.lilchunks.utils.Logger;
+
+public void useCustomLogger() {
+    Logger logger = LilChunks.getInstance().getCustomLogger();
+    
+    // Use LilChunks logger methods
+    logger.info("Integration successful");
+    logger.warning("This is a warning");
+    logger.error("This is an error");
+    logger.success("Operation completed successfully");
+}
+```
+
+## Best Practices
+
+### Error Handling
+
+Always check for LilChunks availability:
+
+```java
+public boolean isLilChunksAvailable() {
+    Plugin plugin = getServer().getPluginManager().getPlugin("LilChunks");
+    return plugin != null && plugin.isEnabled();
+}
+
+public void safeApiCall() {
+    if (!isLilChunksAvailable()) {
+        getLogger().warning("LilChunks not available");
+        return;
+    }
+    
+    try {
+        GenerationManager manager = LilChunks.getInstance().getGenerationManager();
+        // Your API calls here
+    } catch (Exception e) {
+        getLogger().severe("Error calling LilChunks API: " + e.getMessage());
+    }
+}
+```
+
+### Async Operations
+
+Handle async operations properly:
+
+```java
+public void asyncGenerationMonitor(World world) {
+    Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
+        GenerationManager manager = LilChunks.getInstance().getGenerationManager();
+        
+        while (manager.isGenerating(world)) {
+            GenerationStatus status = manager.getStatus(world);
+            
+            // Update your plugin's data
+            updateProgress(status.getProgress());
+            
+            try {
+                Thread.sleep(5000); // Check every 5 seconds
+            } catch (InterruptedException e) {
+                break;
+            }
+        }
+        
+        // Generation completed
+        onGenerationComplete(world);
+    });
+}
+```
+
+### Resource Management
+
+Clean up resources properly:
+
+```java
+@Override
+public void onDisable() {
+    // Stop any generation you started
+    if (isLilChunksAvailable()) {
+        GenerationManager manager = LilChunks.getInstance().getGenerationManager();
+        
+        // Stop generation in specific worlds if needed
+        for (World world : getServer().getWorlds()) {
+            if (manager.isGenerating(world)) {
+                manager.stopGeneration(world);
+                getLogger().info("Stopped generation in " + world.getName());
+            }
+        }
+    }
+}
+```
+
+## API Limitations
+
+### Current Limitations
+
+<AccordionGroup>
+  <Accordion title="Configuration Access" icon="gear">
+    **Limitation**: Limited access to modify generation settings programmatically
+    
+    **Workaround**: Use configuration files or events to coordinate settings
+  </Accordion>
+  
+  <Accordion title="Custom Generators" icon="cube">
+    **Limitation**: Cannot register custom chunk generators through API
+    
+    **Workaround**: Use LilChunks' built-in generation with custom world types
+  </Accordion>
+  
+  <Accordion title="Progress Callbacks" icon="phone">
+    **Limitation**: No fine-grained progress callbacks
+    
+    **Workaround**: Poll status using scheduled tasks
+  </Accordion>
+</AccordionGroup>
+
+### Future API Enhancements
+
+Planned improvements for future versions:
+
+- Custom generation settings API
+- Progress callback system
+- Custom generator registration
+- Advanced event system
+- Configuration API
+
+## Example Projects
+
+### Simple Integration
+
+A basic plugin that adds GUI for LilChunks:
+
+```java
+public class LilChunksGUI extends JavaPlugin implements Listener {
+    
+    @Override
+    public void onEnable() {
+        if (!isLilChunksAvailable()) {
+            getLogger().severe("LilChunks not found! Disabling...");
+            setEnabled(false);
+            return;
+        }
+        
+        getCommand("chunkgui").setExecutor(new GUICommand());
+        getServer().getPluginManager().registerEvents(this, this);
+    }
+    
+    // Implementation details...
+}
+```
+
+### Advanced Integration
+
+A plugin that provides web dashboard for generation monitoring:
+
+```java
+public class LilChunksWeb extends JavaPlugin {
+    private WebServer webServer;
+    private GenerationMonitor monitor;
+    
+    @Override
+    public void onEnable() {
+        // Initialize web server
+        webServer = new WebServer(8080);
+        
+        // Start monitoring
+        monitor = new GenerationMonitor();
+        monitor.start();
+        
+        // Register API endpoints
+        webServer.addEndpoint("/api/status", new StatusEndpoint());
+        webServer.addEndpoint("/api/start", new StartEndpoint());
+        webServer.addEndpoint("/api/stop", new StopEndpoint());
+    }
+    
+    // Implementation details...
+}
+```
+
+## Support and Contributing
+
+### Getting Help
+
+<CardGroup cols={2}>
+  <Card title="API Documentation" icon="book">
+    Check the complete API documentation and examples
+  </Card>
+  <Card title="GitHub Issues" icon="github">
+    Report API bugs or request new features
+  </Card>
+  <Card title="Developer Discord" icon="discord">
+    Join the developer community for API support
+  </Card>
+  <Card title="Example Projects" icon="code">
+    Browse example integrations and plugins
+  </Card>
+</CardGroup>
+
+### Contributing
+
+Help improve the LilChunks API:
+
+1. **Report Issues**: Found a bug? Report it on GitHub
+2. **Request Features**: Need new API functionality? Create a feature request
+3. **Submit Examples**: Share your integration examples
+4. **Improve Documentation**: Help make the API docs better
+
+<Note>
+The LilChunks API is actively developed. Check the GitHub repository for the latest updates and changes.
+</Note>

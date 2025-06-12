@@ -1,0 +1,577 @@
+---
+title: 'Configuration'
+description: 'Complete configuration guide for LilChunks'
+icon: 'gear'
+---
+
+# Configuration Guide
+
+Customize LilChunks to perfectly fit your server's needs with our comprehensive configuration options.
+
+## Configuration File Location
+
+The main configuration file is located at:
+```
+plugins/LilChunks/config.yml
+```
+
+<Note>
+After making changes to the configuration, use `/lilchunks reload` to apply them without restarting the server.
+</Note>
+
+## Default Configuration
+
+Here's the complete default configuration with explanations:
+
+```yaml
+# LilChunks Configuration
+
+# Debug mode - enables additional logging
+debug: false
+
+# Chunk generation settings
+chunk-generation:
+  # Maximum chunks to generate per tick
+  chunks-per-tick: 4
+  
+  # Whether to use async chunk generation (1.17+)
+  use-async: true
+  
+  # Whether to generate structures
+  generate-structures: true
+  
+  # Whether to generate caves
+  generate-caves: true
+  
+  # Whether to generate features (trees, ores, etc.)
+  generate-features: true
+
+# World settings
+world-settings:
+  # Default world height (1.17+)
+  min-height: -64
+  max-height: 320
+  
+  # Whether to respect world-specific height settings
+  respect-world-height: true
+
+# Performance settings
+performance:
+  # Maximum memory usage in MB (0 for unlimited)
+  max-memory-usage: 0
+  
+  # Whether to use parallel chunk generation
+  use-parallel: true
+  
+  # Number of threads to use for chunk generation (0 for auto)
+  thread-count: 0
+
+# Logging settings
+logging:
+  # Whether to log chunk generation progress
+  log-progress: true
+  
+  # Progress update interval in seconds
+  progress-interval: 5
+  
+  # Whether to log detailed chunk information
+  detailed-logs: false
+```
+
+## Configuration Sections
+
+### Debug Settings
+
+<AccordionGroup>
+  <Accordion title="debug" icon="bug">
+    **Type**: `boolean`  
+    **Default**: `false`  
+    **Description**: Enables detailed debug logging for troubleshooting
+    
+    ```yaml
+    debug: true  # Enable debug mode
+    ```
+    
+    <Warning>
+    Debug mode generates extensive logs. Only enable when troubleshooting issues.
+    </Warning>
+  </Accordion>
+</AccordionGroup>
+
+### Chunk Generation Settings
+
+<AccordionGroup>
+  <Accordion title="chunks-per-tick" icon="clock">
+    **Type**: `integer`  
+    **Default**: `4`  
+    **Range**: `1-20`  
+    **Description**: Maximum number of chunks to generate per server tick
+    
+    ```yaml
+    chunk-generation:
+      chunks-per-tick: 4  # Balanced performance
+    ```
+    
+    **Performance Impact**:
+    - **Lower values (1-2)**: Minimal lag, slower generation
+    - **Medium values (3-6)**: Balanced performance
+    - **Higher values (7-20)**: Faster generation, potential lag
+    
+    <Tip>
+    Start with the default value and adjust based on your server's performance.
+    </Tip>
+  </Accordion>
+  
+  <Accordion title="use-async" icon="arrows-rotate">
+    **Type**: `boolean`  
+    **Default**: `true`  
+    **Description**: Use asynchronous chunk generation (Minecraft 1.17+)
+    
+    ```yaml
+    chunk-generation:
+      use-async: true  # Recommended for 1.17+
+    ```
+    
+    **Benefits**:
+    - Reduces main thread blocking
+    - Improves server performance
+    - Better player experience
+    
+    <Note>
+    Async generation is only available on Minecraft 1.17 and higher. On older versions, this setting is ignored.
+    </Note>
+  </Accordion>
+  
+  <Accordion title="generate-structures" icon="building">
+    **Type**: `boolean`  
+    **Default**: `true`  
+    **Description**: Whether to generate structures (villages, dungeons, etc.)
+    
+    ```yaml
+    chunk-generation:
+      generate-structures: true
+    ```
+    
+    **Impact**:
+    - `true`: Full world generation with all structures
+    - `false`: Faster generation, but no structures
+  </Accordion>
+  
+  <Accordion title="generate-caves" icon="mountain">
+    **Type**: `boolean`  
+    **Default**: `true`  
+    **Description**: Whether to generate cave systems
+    
+    ```yaml
+    chunk-generation:
+      generate-caves: true
+    ```
+    
+    **Impact**:
+    - `true`: Complete underground generation
+    - `false`: Faster generation, solid underground
+  </Accordion>
+  
+  <Accordion title="generate-features" icon="tree">
+    **Type**: `boolean`  
+    **Default**: `true`  
+    **Description**: Whether to generate world features (trees, ores, decorations)
+    
+    ```yaml
+    chunk-generation:
+      generate-features: true
+    ```
+    
+    **Impact**:
+    - `true`: Full world decoration and resources
+    - `false`: Faster generation, minimal decoration
+  </Accordion>
+</AccordionGroup>
+
+### World Settings
+
+<AccordionGroup>
+  <Accordion title="min-height / max-height" icon="arrows-up-down">
+    **Type**: `integer`  
+    **Default**: `-64` / `320`  
+    **Description**: Default world height limits for generation
+    
+    ```yaml
+    world-settings:
+      min-height: -64   # Deepslate level
+      max-height: 320   # Build limit
+    ```
+    
+    **Version Compatibility**:
+    - **1.17+**: Supports extended height (-64 to 320)
+    - **1.16 and below**: Limited to 0-256
+  </Accordion>
+  
+  <Accordion title="respect-world-height" icon="globe">
+    **Type**: `boolean`  
+    **Default**: `true`  
+    **Description**: Use world-specific height settings instead of config defaults
+    
+    ```yaml
+    world-settings:
+      respect-world-height: true
+    ```
+    
+    **Behavior**:
+    - `true`: Use each world's individual height settings
+    - `false`: Use config values for all worlds
+  </Accordion>
+</AccordionGroup>
+
+### Performance Settings
+
+<AccordionGroup>
+  <Accordion title="max-memory-usage" icon="memory">
+    **Type**: `integer`  
+    **Default**: `0` (unlimited)  
+    **Unit**: Megabytes  
+    **Description**: Maximum memory usage for chunk generation
+    
+    ```yaml
+    performance:
+      max-memory-usage: 1024  # 1GB limit
+    ```
+    
+    **Values**:
+    - `0`: No memory limit (default)
+    - `>0`: Memory limit in MB
+    
+    <Warning>
+    Setting a memory limit may slow down generation but prevents out-of-memory errors.
+    </Warning>
+  </Accordion>
+  
+  <Accordion title="use-parallel" icon="layer-group">
+    **Type**: `boolean`  
+    **Default**: `true`  
+    **Description**: Enable parallel chunk generation processing
+    
+    ```yaml
+    performance:
+      use-parallel: true
+    ```
+    
+    **Benefits**:
+    - Utilizes multiple CPU cores
+    - Faster generation on multi-core systems
+    - Better resource utilization
+  </Accordion>
+  
+  <Accordion title="thread-count" icon="microchip">
+    **Type**: `integer`  
+    **Default**: `0` (auto)  
+    **Description**: Number of threads for chunk generation
+    
+    ```yaml
+    performance:
+      thread-count: 4  # Use 4 threads
+    ```
+    
+    **Values**:
+    - `0`: Auto-detect (recommended)
+    - `1-16`: Specific thread count
+    
+    <Tip>
+    Auto-detection typically uses `CPU cores - 1` to leave resources for the main server thread.
+    </Tip>
+  </Accordion>
+</AccordionGroup>
+
+### Logging Settings
+
+<AccordionGroup>
+  <Accordion title="log-progress" icon="chart-line">
+    **Type**: `boolean`  
+    **Default**: `true`  
+    **Description**: Enable progress logging during generation
+    
+    ```yaml
+    logging:
+      log-progress: true
+    ```
+    
+    **Output Example**:
+    ```
+    [LilChunks] Generation progress: 150/441 chunks (34%)
+    ```
+  </Accordion>
+  
+  <Accordion title="progress-interval" icon="stopwatch">
+    **Type**: `integer`  
+    **Default**: `5`  
+    **Unit**: Seconds  
+    **Description**: How often to log progress updates
+    
+    ```yaml
+    logging:
+      progress-interval: 10  # Every 10 seconds
+    ```
+    
+    **Recommended Values**:
+    - **Fast generation**: 5-10 seconds
+    - **Slow generation**: 15-30 seconds
+  </Accordion>
+  
+  <Accordion title="detailed-logs" icon="list">
+    **Type**: `boolean`  
+    **Default**: `false`  
+    **Description**: Enable detailed chunk-by-chunk logging
+    
+    ```yaml
+    logging:
+      detailed-logs: true
+    ```
+    
+    <Warning>
+    Detailed logs can generate massive log files. Only enable for debugging specific issues.
+    </Warning>
+  </Accordion>
+</AccordionGroup>
+
+## Performance Profiles
+
+Here are pre-configured profiles for different server types:
+
+### High-Performance Server
+For powerful dedicated servers:
+
+```yaml
+chunk-generation:
+  chunks-per-tick: 8
+  use-async: true
+  generate-structures: true
+  generate-caves: true
+  generate-features: true
+
+performance:
+  max-memory-usage: 0
+  use-parallel: true
+  thread-count: 0
+
+logging:
+  log-progress: true
+  progress-interval: 3
+  detailed-logs: false
+```
+
+### Balanced Server
+For most shared hosting and VPS:
+
+```yaml
+chunk-generation:
+  chunks-per-tick: 4
+  use-async: true
+  generate-structures: true
+  generate-caves: true
+  generate-features: true
+
+performance:
+  max-memory-usage: 2048
+  use-parallel: true
+  thread-count: 0
+
+logging:
+  log-progress: true
+  progress-interval: 5
+  detailed-logs: false
+```
+
+### Low-Resource Server
+For budget hosting or limited resources:
+
+```yaml
+chunk-generation:
+  chunks-per-tick: 2
+  use-async: true
+  generate-structures: true
+  generate-caves: true
+  generate-features: true
+
+performance:
+  max-memory-usage: 1024
+  use-parallel: false
+  thread-count: 1
+
+logging:
+  log-progress: true
+  progress-interval: 10
+  detailed-logs: false
+```
+
+### Speed-Optimized
+For fastest generation (may cause lag):
+
+```yaml
+chunk-generation:
+  chunks-per-tick: 12
+  use-async: true
+  generate-structures: false
+  generate-caves: false
+  generate-features: false
+
+performance:
+  max-memory-usage: 0
+  use-parallel: true
+  thread-count: 0
+
+logging:
+  log-progress: true
+  progress-interval: 2
+  detailed-logs: false
+```
+
+## Configuration Validation
+
+LilChunks validates your configuration on startup and reload:
+
+### Valid Configuration
+```
+[LilChunks] Configuration loaded successfully
+[LilChunks] Using 4 chunks per tick with async generation
+```
+
+### Invalid Configuration
+```
+[LilChunks] WARNING: Invalid chunks-per-tick value: 25 (max: 20)
+[LilChunks] Using default value: 4
+```
+
+## Advanced Configuration
+
+### Environment-Specific Settings
+
+You can create different configurations for different environments:
+
+<Tabs>
+  <Tab title="Development">
+    ```yaml
+    debug: true
+    chunk-generation:
+      chunks-per-tick: 1
+    logging:
+      detailed-logs: true
+      progress-interval: 1
+    ```
+  </Tab>
+  <Tab title="Testing">
+    ```yaml
+    debug: false
+    chunk-generation:
+      chunks-per-tick: 6
+    logging:
+      detailed-logs: false
+      progress-interval: 3
+    ```
+  </Tab>
+  <Tab title="Production">
+    ```yaml
+    debug: false
+    chunk-generation:
+      chunks-per-tick: 4
+    logging:
+      detailed-logs: false
+      progress-interval: 5
+    ```
+  </Tab>
+</Tabs>
+
+### Configuration Management
+
+<Steps>
+  <Step title="Backup Configuration">
+    Always backup your configuration before making changes:
+    ```bash
+    cp plugins/LilChunks/config.yml plugins/LilChunks/config.yml.backup
+    ```
+  </Step>
+  
+  <Step title="Test Changes">
+    Test configuration changes on a development server first.
+  </Step>
+  
+  <Step title="Apply Changes">
+    Use the reload command to apply changes:
+    ```bash
+    /lilchunks reload
+    ```
+  </Step>
+  
+  <Step title="Monitor Performance">
+    Watch server performance after configuration changes.
+  </Step>
+</Steps>
+
+## Troubleshooting Configuration
+
+<AccordionGroup>
+  <Accordion title="Configuration Not Loading" icon="exclamation-triangle">
+    **Symptoms**: Changes don't take effect after reload
+    
+    **Solutions**:
+    - Check YAML syntax with a validator
+    - Verify file permissions (readable by server)
+    - Check for hidden characters or encoding issues
+    - Restart the server if reload fails
+  </Accordion>
+  
+  <Accordion title="Performance Issues" icon="gauge">
+    **Symptoms**: Server lag after configuration changes
+    
+    **Solutions**:
+    - Reduce `chunks-per-tick` value
+    - Disable parallel processing temporarily
+    - Set memory limits
+    - Check server resources (CPU, RAM)
+  </Accordion>
+  
+  <Accordion title="Generation Errors" icon="bug">
+    **Symptoms**: Chunk generation fails or produces errors
+    
+    **Solutions**:
+    - Enable debug mode temporarily
+    - Check detailed logs
+    - Verify world compatibility settings
+    - Reset to default configuration
+  </Accordion>
+</AccordionGroup>
+
+## Configuration Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Start Conservative" icon="shield">
+    Begin with lower performance settings and gradually increase based on server capacity.
+  </Card>
+  <Card title="Monitor Resources" icon="chart-line">
+    Watch CPU, memory, and TPS during generation to find optimal settings.
+  </Card>
+  <Card title="Test Changes" icon="flask">
+    Always test configuration changes on a development server first.
+  </Card>
+  <Card title="Document Settings" icon="file-text">
+    Keep notes about what settings work best for your server setup.
+  </Card>
+</CardGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Commands Reference"
+    icon="terminal"
+    href="/lilchunks/commands"
+  >
+    Learn all available commands and their options
+  </Card>
+  <Card
+    title="Performance Tuning"
+    icon="gauge-high"
+    href="/lilchunks/performance"
+  >
+    Optimize LilChunks for maximum performance
+  </Card>
+</CardGroup>
