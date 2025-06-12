@@ -8,38 +8,52 @@
     "dark": "#1E40AF"
   },
   "favicon": "/favicon.svg",
-  "navigation": [
+  "tabs": [
     {
-      "group": "Overview",
-      "pages": [
-        "index"
-      ]
+      "name": "Overview",
+      "url": "overview"
     },
     {
-      "group": "LilWorlds",
-      "pages": [
-        "lilworlds/introduction",
-        "lilworlds/installation",
-        "lilworlds/quick-start",
-        "lilworlds/configuration"
-      ]
-    },
-    {
-      "group": "World Management",
-      "pages": [
-        "lilworlds/world-management",
-        "lilworlds/world-deletion",
-        "lilworlds/custom-generators"
-      ]
-    },
-    {
-      "group": "Commands",
-      "pages": [
-        "lilworlds/commands/world-commands",
-        "lilworlds/commands/admin-commands"
-      ]
+      "name": "LilWorlds",
+      "url": "lilworlds"
     }
   ],
+  "navigation": {
+    "overview": [
+      {
+        "group": "Getting Started",
+        "pages": [
+          "index"
+        ]
+      }
+    ],
+    "lilworlds": [
+      {
+        "group": "Getting Started",
+        "pages": [
+          "lilworlds/introduction",
+          "lilworlds/installation",
+          "lilworlds/quick-start",
+          "lilworlds/configuration"
+        ]
+      },
+      {
+        "group": "World Management",
+        "pages": [
+          "lilworlds/world-management",
+          "lilworlds/world-deletion",
+          "lilworlds/custom-generators"
+        ]
+      },
+      {
+        "group": "Commands",
+        "pages": [
+          "lilworlds/commands/world-commands",
+          "lilworlds/commands/admin-commands"
+        ]
+      }
+    ]
+  },
   "logo": {
     "light": "/logo/light.svg",
     "dark": "/logo/dark.svg"
