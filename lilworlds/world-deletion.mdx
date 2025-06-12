@@ -1,0 +1,545 @@
+---
+title: 'Enhanced World Deletion'
+description: 'Comprehensive world deletion with configuration purging'
+icon: 'trash'
+---
+
+## Overview
+
+LilWorlds v1.2+ features **enhanced world deletion** that goes beyond simply removing world files. The deletion process includes comprehensive configuration purging to ensure no orphaned entries remain in your server configuration.
+
+<Warning>
+**Important:** World deletion is permanent and cannot be undone. Always create backups before deleting important worlds.
+</Warning>
+
+## Enhanced Deletion Process
+
+### What Gets Deleted
+
+When you delete a world with LilWorlds, the following are removed:
+
+<CardGroup cols={2}>
+  <Card title="World Files" icon="folder">
+    **Complete File Removal**
+    
+    All world files and folders permanently deleted from disk
+  </Card>
+  <Card title="Configuration Entries" icon="gear">
+    **Config Purging**
+    
+    All references removed from config.yml and worlds.yml
+  </Card>
+  <Card title="Inventory Groups" icon="backpack">
+    **Inventory Cleanup**
+    
+    World removed from all inventory separation groups
+  </Card>
+  <Card title="Player Data" icon="user">
+    **Player References**
+    
+    World-specific player data and references cleaned up
+  </Card>
+</CardGroup>
+
+### Step-by-Step Process
+
+<Steps>
+  <Step title="Confirmation Required">
+    First command shows detailed warning about what will be deleted
+  </Step>
+  <Step title="Player Evacuation">
+    All players in the world are safely moved to the spawn world
+  </Step>
+  <Step title="World Unloading">
+    World is properly unloaded from server memory
+  </Step>
+  <Step title="Configuration Purging">
+    All configuration entries are removed from all config files
+  </Step>
+  <Step title="File Deletion">
+    World files are permanently deleted from the server disk
+  </Step>
+  <Step title="Cleanup Verification">
+    System verifies all references have been successfully removed
+  </Step>
+</Steps>
+
+## Deletion Commands
+
+### Basic Deletion
+
+```bash
+# Delete a world (requires confirmation)
+/world remove myworld
+
+# Alternative command
+/world delete myworld
+```
+
+### Advanced Deletion Options
+
+```bash
+# Force deletion without confirmation (admin only)
+/world remove myworld --force
+
+# Delete with backup creation first
+/world remove myworld --backup
+
+# Delete multiple worlds
+/world remove world1 world2 world3
+
+# Delete with specific reason logging
+/world remove myworld --reason "No longer needed"
+```
+
+## Configuration Purging Details
+
+### Main Configuration (config.yml)
+
+The deletion process removes world references from:
+
+```yaml
+# Before deletion
+inventory-groups:
+  survival:
+    - world
+    - myworld        # ← This will be removed
+    - world_nether
+  creative:
+    - creative_world
+    - myworld        # ← This will also be removed
+
+world-groups:
+  main:
+    - world
+    - myworld        # ← Removed from here too
+
+# After deletion - myworld completely removed
+inventory-groups:
+  survival:
+    - world
+    - world_nether
+  creative:
+    - creative_world
+
+world-groups:
+  main:
+    - world
+```
+
+### World Configuration (worlds.yml)
+
+Complete world entry removal:
+
+```yaml
+# Before deletion
+worlds:
+  world:
+    environment: NORMAL
+    generator: null
+  myworld:              # ← Entire section removed
+    environment: NORMAL
+    generator: VoidGenerator
+    settings:
+      pvp: true
+      difficulty: NORMAL
+  other_world:
+    environment: NETHER
+
+# After deletion
+worlds:
+  world:
+    environment: NORMAL
+    generator: null
+  other_world:
+    environment: NETHER
+```
+
+### Inventory Group Cleanup
+
+Automatic cleanup of empty groups:
+
+```yaml
+# If a group becomes empty after world removal
+inventory-groups:
+  survival:
+    - world
+  empty-group: []       # ← This group will be removed
+
+# After cleanup
+inventory-groups:
+  survival:
+    - world
+  # empty-group removed automatically
+```
+
+## Safety Features
+
+### Confirmation System
+
+LilWorlds requires explicit confirmation for deletion:
+
+<Accordion title="Confirmation Message Example">
+```
+⚠️  WARNING: World Deletion ⚠️
+
+You are about to delete world 'myworld'.
+
+This action will:
+✗ Permanently delete all world files
+✗ Remove all configuration entries
+✗ Remove from inventory groups: survival, creative
+✗ Purge all world-specific settings
+✗ Move 3 online players to spawn
+
+This action CANNOT be undone!
+
+Type '/world remove myworld' again to confirm deletion.
+```
+</Accordion>
+
+### Player Protection
+
+Before deletion, all players are safely evacuated:
+
+```bash
+# Players are automatically moved to spawn
+[INFO] Moving player 'Steve' from 'myworld' to spawn world
+[INFO] Moving player 'Alex' from 'myworld' to spawn world
+[INFO] All players evacuated from 'myworld'
+```
+
+### Backup Integration
+
+Optional automatic backup before deletion:
+
+```yaml
+# config.yml
+deletion:
+  auto-backup: true
+  backup-location: "backups/"
+  keep-backups: 5
+```
+
+## Deletion Logging
+
+### Comprehensive Logging
+
+All deletion operations are thoroughly logged:
+
+```
+[INFO] [LilWorlds] World deletion initiated: myworld (by PlayerName)
+[INFO] [LilWorlds] Evacuating 3 players from world 'myworld'
+[INFO] [LilWorlds] Unloading world 'myworld'
+[INFO] [LilWorlds] Purging configuration entries for 'myworld'
+[INFO] [LilWorlds] Removed from inventory groups: survival, creative
+[INFO] [LilWorlds] Removed from world groups: main
+[INFO] [LilWorlds] Deleting world files for 'myworld'
+[INFO] [LilWorlds] World 'myworld' successfully deleted and purged
+```
+
+### Security Logging
+
+Security events are logged separately:
+
+```yaml
+# config.yml
+security:
+  log-security-events: true
+  log-deletions: true
+  log-file: "logs/lilworlds-security.log"
+```
+
+## Recovery Options
+
+### Backup Recovery
+
+If you have backups, you can recover deleted worlds:
+
+```bash
+# Restore from backup
+/world restore myworld_backup_20240612
+
+# Import backup as new world
+/world import myworld_backup_20240612 myworld_restored
+```
+
+### Configuration Recovery
+
+Manually restore configuration entries if needed:
+
+<Steps>
+  <Step title="Stop Server">
+    Safely stop your Minecraft server
+  </Step>
+  <Step title="Restore Config Files">
+    Replace config files with backup versions
+  </Step>
+  <Step title="Restore World Files">
+    Copy world folder back to server directory
+  </Step>
+  <Step title="Start Server">
+    Start server and verify world is accessible
+  </Step>
+</Steps>
+
+## Bulk Deletion
+
+### Multiple World Deletion
+
+Delete multiple worlds efficiently:
+
+```bash
+# Delete multiple worlds
+/world remove world1 world2 world3
+
+# Delete by pattern (admin only)
+/world remove --pattern "temp_*"
+
+# Delete all unloaded worlds
+/world remove --unloaded
+```
+
+### Cleanup Operations
+
+Remove orphaned or unused worlds:
+
+```bash
+# Clean up orphaned worlds
+/worlds cleanup --orphaned
+
+# Remove worlds not accessed in 30 days
+/worlds cleanup --unused 30d
+
+# Interactive cleanup mode
+/worlds cleanup --interactive
+```
+
+## Advanced Configuration
+
+### Deletion Policies
+
+Configure deletion behavior:
+
+```yaml
+# config.yml
+deletion:
+  # Require confirmation for all deletions
+  require-confirmation: true
+  
+  # Minimum time before deletion (prevents accidents)
+  deletion-delay: 30  # seconds
+  
+  # Auto-backup before deletion
+  auto-backup: true
+  
+  # Purge configuration entries
+  purge-config: true
+  
+  # Clean up empty groups
+  cleanup-empty-groups: true
+  
+  # Log all deletion operations
+  log-deletions: true
+```
+
+### Permission-Based Restrictions
+
+Control who can delete worlds:
+
+```yaml
+# permissions.yml
+permissions:
+  lilworlds.world.remove: false          # Basic deletion
+  lilworlds.world.remove.force: false    # Force deletion
+  lilworlds.world.remove.multiple: false # Bulk deletion
+  lilworlds.admin.cleanup: false         # Cleanup operations
+```
+
+### Rate Limiting
+
+Prevent deletion abuse:
+
+```yaml
+# config.yml
+security:
+  deletion-rate-limit: 5    # Max 5 deletions per hour
+  deletion-cooldown: 300    # 5 minute cooldown between deletions
+```
+
+## Monitoring and Alerts
+
+### Deletion Monitoring
+
+Track deletion activities:
+
+```bash
+# View deletion history
+/worlds history --deletions
+
+# Monitor deletion statistics
+/worlds stats --deletions
+
+# Check recent deletions
+/worlds log --filter deletions --recent 24h
+```
+
+### Alert System
+
+Configure alerts for important deletions:
+
+```yaml
+# config.yml
+alerts:
+  deletion-alerts: true
+  alert-channels:
+    - discord
+    - console
+    - log-file
+  
+  # Alert for large worlds
+  size-threshold: 1GB
+  
+  # Alert for worlds with many players
+  player-threshold: 10
+```
+
+## Best Practices
+
+### Before Deletion
+
+<Tip>
+**Pre-Deletion Checklist:**
+- ✅ Verify you have the correct world name
+- ✅ Check if anyone is currently using the world
+- ✅ Create a backup if the world might be needed later
+- ✅ Inform other admins/players about the deletion
+- ✅ Document the reason for deletion
+</Tip>
+
+### Deletion Strategy
+
+```yaml
+# Recommended deletion workflow
+deletion-workflow:
+  1. Announce planned deletion to players
+  2. Create backup if world has value
+  3. Move players out of world
+  4. Unload world temporarily to test
+  5. Verify no issues with world offline
+  6. Proceed with deletion
+  7. Monitor for any issues post-deletion
+```
+
+### Regular Maintenance
+
+Schedule regular cleanup:
+
+```bash
+# Weekly cleanup script
+#!/bin/bash
+echo "Starting weekly world cleanup..."
+
+# Remove temporary worlds older than 7 days
+/world remove --pattern "temp_*" --older-than 7d
+
+# Clean up orphaned configurations
+/worlds cleanup --config
+
+# Remove unused backup worlds
+/worlds cleanup --backups --keep 10
+
+echo "Cleanup completed!"
+```
+
+## Troubleshooting
+
+### Common Issues
+
+<AccordionGroup>
+  <Accordion title="Deletion Fails">
+    **Symptoms:** World deletion command fails or hangs
+    
+    **Solutions:**
+    - Check if players are still in the world
+    - Verify sufficient disk space for operations
+    - Check file permissions on world folder
+    - Try unloading world first: `/world unload myworld`
+    - Check console for specific error messages
+  </Accordion>
+  
+  <Accordion title="Configuration Not Purged">
+    **Symptoms:** World still appears in config files after deletion
+    
+    **Solutions:**
+    - Manually edit configuration files
+    - Use `/worlds reload` to refresh configs
+    - Check for syntax errors in config files
+    - Verify `purge-config: true` in settings
+  </Accordion>
+  
+  <Accordion title="Players Not Evacuated">
+    **Symptoms:** Players remain in world during deletion
+    
+    **Solutions:**
+    - Manually teleport players: `/tp @a spawn`
+    - Check spawn world is loaded and accessible
+    - Verify teleportation permissions
+    - Use `/world unload myworld --force` if needed
+  </Accordion>
+</AccordionGroup>
+
+### Recovery Procedures
+
+If deletion goes wrong:
+
+<Steps>
+  <Step title="Stop Server Immediately">
+    Prevent further damage by stopping the server
+  </Step>
+  <Step title="Assess Damage">
+    Check what was actually deleted vs. what should have been
+  </Step>
+  <Step title="Restore from Backup">
+    Use file system backups to restore deleted content
+  </Step>
+  <Step title="Fix Configuration">
+    Manually restore configuration entries if needed
+  </Step>
+  <Step title="Test Thoroughly">
+    Verify everything works before allowing players back
+  </Step>
+</Steps>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="World Cloning"
+    icon="copy"
+    href="/lilworlds/world-cloning"
+  >
+    Learn to create backups and copies before deletion
+  </Card>
+  <Card
+    title="Security Features"
+    icon="shield"
+    href="/lilworlds/security-features"
+  >
+    Understand rate limiting and access controls
+  </Card>
+  <Card
+    title="Configuration Guide"
+    icon="gear"
+    href="/lilworlds/configuration"
+  >
+    Master configuration management and organization
+  </Card>
+  <Card
+    title="Commands Reference"
+    icon="terminal"
+    href="/lilworlds/commands/world-commands"
+  >
+    Complete reference for all deletion commands
+  </Card>
+</CardGroup>

@@ -1,0 +1,562 @@
+---
+title: 'Configuration'
+description: 'Complete guide to configuring LilWorlds for your server'
+icon: 'gear'
+---
+
+## Configuration Files Overview
+
+LilWorlds uses multiple configuration files to organize different aspects of the plugin:
+
+<CardGroup cols={2}>
+  <Card title="config.yml" icon="gear">
+    **Main Configuration**
+    
+    Core plugin settings, security, and performance options
+  </Card>
+  <Card title="worlds.yml" icon="globe">
+    **World Settings**
+    
+    Individual world configurations and properties
+  </Card>
+  <Card title="messages.yml" icon="message">
+    **Messages**
+    
+    Customizable plugin messages and translations
+  </Card>
+  <Card title="generators/" icon="folder">
+    **Custom Generators**
+    
+    Custom world generator definitions
+  </Card>
+</CardGroup>
+
+## Main Configuration (config.yml)
+
+The main configuration file controls core plugin behavior:
+
+### Basic Settings
+
+```yaml
+# Basic plugin settings
+settings:
+  # Automatically load worlds on server start
+  auto-load-worlds: true
+  
+  # Default world type for new worlds
+  default-world-type: NORMAL
+  
+  # Enable separate inventories per world/group
+  enable-inventory-separation: true
+  
+  # Default generator for new worlds (optional)
+  default-generator: null
+  
+  # Enable debug logging
+  debug-mode: false
+  
+  # Language for messages (future feature)
+  language: "en"
+```
+
+### Security Configuration
+
+```yaml
+security:
+  # Enable rate limiting for commands
+  enable-rate-limiting: true
+  
+  # Maximum worlds a player can create per hour
+  max-worlds-per-player: 10
+  
+  # Cooldown periods (in seconds)
+  cooldowns:
+    world-create: 30
+    world-clone: 60
+    world-import: 15
+    world-delete: 120
+  
+  # Input validation settings
+  validation:
+    max-world-name-length: 32
+    allowed-world-name-pattern: "^[a-zA-Z0-9_-]+$"
+    
+  # Security logging
+  log-security-events: true
+```
+
+### Performance Settings
+
+```yaml
+performance:
+  # Use async operations for world creation/deletion
+  async-world-creation: true
+  async-world-deletion: true
+  
+  # Chunk loading optimization
+  chunk-loading-optimization: true
+  
+  # Memory management
+  auto-cleanup-rate-limits: true
+  cleanup-interval-minutes: 60
+  
+  # World loading limits
+  max-concurrent-world-operations: 3
+```
+
+### Inventory Separation
+
+```yaml
+# Inventory group configuration
+inventory-groups:
+  # Survival worlds share inventory
+  survival:
+    - world
+    - world_nether
+    - world_the_end
+    
+  # Creative worlds share inventory
+  creative:
+    - creative_world
+    - build_world
+    
+  # Each world has separate inventory
+  separate:
+    - minigame_world
+    - event_world
+
+# Default group for new worlds
+default-inventory-group: "separate"
+
+# What to separate between worlds
+inventory-separation:
+  inventory: true
+  ender-chest: true
+  experience: true
+  health: false
+  hunger: false
+  gamemode: true
+```
+
+### Integration Settings
+
+```yaml
+integrations:
+  # PlaceholderAPI integration
+  placeholderapi:
+    enabled: true
+    
+  # bStats metrics
+  bstats:
+    enabled: true
+    
+  # Future integrations
+  worldedit:
+    enabled: false
+```
+
+## World Configuration (worlds.yml)
+
+Individual world settings are stored in `worlds.yml`:
+
+```yaml
+worlds:
+  # Example world configuration
+  myworld:
+    environment: NORMAL
+    generator: null
+    generate-structures: true
+    
+    # World-specific settings
+    settings:
+      pvp: true
+      difficulty: NORMAL
+      spawn-animals: true
+      spawn-monsters: true
+      spawn-npcs: true
+      
+    # Spawn location
+    spawn:
+      x: 0.0
+      y: 64.0
+      z: 0.0
+      yaw: 0.0
+      pitch: 0.0
+      
+    # World rules
+    gamerules:
+      doMobSpawning: true
+      keepInventory: false
+      doDaylightCycle: true
+      
+  # Nether world example
+  nether_world:
+    environment: NETHER
+    generator: null
+    generate-structures: true
+    
+    settings:
+      pvp: true
+      difficulty: HARD
+      
+  # Custom generator example
+  void_world:
+    environment: NORMAL
+    generator: VoidGenerator
+    generate-structures: false
+    
+    settings:
+      pvp: false
+      difficulty: PEACEFUL
+```
+
+### Auto-Generated Entries
+
+When you create worlds through commands, LilWorlds automatically adds entries to `worlds.yml`:
+
+```yaml
+# Automatically added when using /world create
+new_world:
+  environment: NORMAL
+  generator: null
+  generate-structures: true
+  created-date: "2024-06-12T22:30:00Z"
+  created-by: "PlayerName"
+```
+
+## Messages Configuration (messages.yml)
+
+Customize all plugin messages:
+
+### Command Messages
+
+```yaml
+commands:
+  # Success messages
+  world-created: "&aSuccessfully created world '{world}'!"
+  world-deleted: "&aWorld '{world}' has been deleted and purged from all configurations!"
+  world-cloned: "&aSuccessfully cloned '{source}' to '{target}'!"
+  
+  # Error messages
+  world-exists: "&cWorld '{world}' already exists!"
+  world-not-found: "&cWorld '{world}' not found!"
+  insufficient-permissions: "&cYou don't have permission to do that!"
+  
+  # Confirmation messages
+  delete-confirmation: "&eAre you sure you want to delete '{world}'? This will also purge all configuration entries. Type the command again to confirm."
+  
+  # Rate limiting
+  rate-limited: "&cYou must wait {seconds} seconds before performing this action again!"
+  operation-limit-reached: "&cYou have reached the maximum number of operations for this hour!"
+```
+
+### Information Messages
+
+```yaml
+info:
+  # World information
+  world-info-header: "&e=== World Information: {world} ==="
+  world-info-environment: "&7Environment: &f{environment}"
+  world-info-generator: "&7Generator: &f{generator}"
+  world-info-players: "&7Players: &f{count}"
+  world-info-chunks: "&7Loaded Chunks: &f{count}"
+  
+  # List formatting
+  list-header: "&e=== World List ==="
+  list-loaded-header: "&a&lLoaded Worlds ({count}):"
+  list-unloaded-header: "&c&lUnloaded Worlds ({count}):"
+  list-total: "&e&lTotal: {count} worlds"
+```
+
+### Color Codes
+
+LilWorlds supports standard Minecraft color codes and hex colors:
+
+```yaml
+# Standard color codes
+colors:
+  primary: "&3"      # Dark Aqua
+  secondary: "&b"    # Aqua
+  success: "&a"      # Green
+  warning: "&e"      # Yellow
+  error: "&c"        # Red
+  info: "&7"         # Gray
+
+# Hex color support (1.16+)
+hex-colors:
+  primary: "&#3B82F6"    # Blue
+  accent: "&#10B981"     # Emerald
+```
+
+## Custom Generators
+
+Create custom world generators in the `generators/` folder:
+
+### Basic Generator
+
+```yaml
+# generators/FlatGrass.yml
+name: "FlatGrass"
+type: "FLAT"
+description: "Simple flat grass world"
+
+settings:
+  # Layer configuration (bottom to top)
+  layers:
+    - "minecraft:bedrock"
+    - "minecraft:dirt,10"
+    - "minecraft:grass_block"
+    
+  # Generation settings
+  structures: false
+  decorations: false
+  
+  # Biome settings
+  biome: "minecraft:plains"
+```
+
+### Advanced Generator
+
+```yaml
+# generators/CustomTerrain.yml
+name: "CustomTerrain"
+type: "NORMAL"
+description: "Custom terrain with modified generation"
+
+settings:
+  # Terrain modification
+  terrain:
+    height-scale: 1.5
+    coordinate-scale: 684.412
+    
+  # Ore generation
+  ores:
+    coal:
+      min-height: 0
+      max-height: 128
+      vein-size: 17
+      tries-per-chunk: 20
+      
+  # Structure generation
+  structures:
+    villages: true
+    strongholds: true
+    mineshafts: false
+    
+  # Biome settings
+  biomes:
+    - "minecraft:plains"
+    - "minecraft:forest"
+    - "minecraft:mountains"
+```
+
+### Void Generator
+
+```yaml
+# generators/VoidGenerator.yml (built-in)
+name: "VoidGenerator"
+type: "VOID"
+description: "Empty void world with optional platform"
+
+settings:
+  # Platform generation
+  spawn-platform: true
+  platform-material: "minecraft:stone"
+  platform-size: 16
+  platform-height: 64
+  
+  # Environment
+  biome: "minecraft:the_void"
+  structures: false
+  decorations: false
+```
+
+## Advanced Configuration
+
+### Environment Variables
+
+You can use environment variables in configuration files:
+
+```yaml
+# Use environment variables
+database:
+  host: "${DB_HOST:localhost}"
+  port: "${DB_PORT:3306}"
+  
+# Default values provided after colon
+security:
+  max-worlds: "${MAX_WORLDS:10}"
+```
+
+### Conditional Configuration
+
+```yaml
+# Different settings based on server type
+server-type: "${SERVER_TYPE:survival}"
+
+# Conditional blocks
+survival-settings:
+  enabled: true
+  pvp: true
+  difficulty: HARD
+  
+creative-settings:
+  enabled: false
+  pvp: false
+  difficulty: PEACEFUL
+```
+
+### Configuration Validation
+
+LilWorlds validates configuration on startup:
+
+<AccordionGroup>
+  <Accordion title="Common Validation Errors">
+    - **Invalid YAML syntax** - Check indentation and special characters
+    - **Unknown world environment** - Use NORMAL, NETHER, or THE_END
+    - **Invalid generator name** - Ensure generator files exist
+    - **Invalid color codes** - Use proper & or # format
+  </Accordion>
+  
+  <Accordion title="Validation Warnings">
+    - **Missing optional fields** - Will use default values
+    - **Deprecated settings** - Update to new format
+    - **Performance recommendations** - Suggestions for optimization
+  </Accordion>
+</AccordionGroup>
+
+## Configuration Commands
+
+### Runtime Configuration Changes
+
+```bash
+# Reload all configurations
+/worlds reload
+
+# Reload specific files
+/worlds reload config
+/worlds reload worlds
+/worlds reload messages
+/worlds reload generators
+
+# Quick reload
+/worlds rl
+```
+
+### World-Specific Configuration
+
+```bash
+# Modify world settings
+/world config set difficulty hard
+/world config set pvp false
+/world config enable keepInventory
+
+# View current settings
+/world config list
+```
+
+## Best Practices
+
+### Organization
+
+<Tip>
+**Tip:** Keep your configuration files organized and well-commented for easier maintenance.
+</Tip>
+
+```yaml
+# Good: Organized and commented
+inventory-groups:
+  # Main survival worlds
+  survival:
+    - world          # Main overworld
+    - world_nether   # Nether dimension
+    - world_the_end  # End dimension
+    
+  # Creative building worlds
+  creative:
+    - creative_world # Main creative world
+    - build_world    # Staff building world
+```
+
+### Security
+
+```yaml
+# Recommended security settings
+security:
+  enable-rate-limiting: true
+  max-worlds-per-player: 5  # Adjust based on your needs
+  log-security-events: true
+  
+  cooldowns:
+    world-create: 60   # Longer cooldowns for stability
+    world-delete: 300  # Extra protection for deletion
+```
+
+### Performance
+
+```yaml
+# Recommended performance settings
+performance:
+  async-world-creation: true
+  max-concurrent-world-operations: 2  # Based on server specs
+  auto-cleanup-rate-limits: true
+  
+# Limit loaded worlds
+settings:
+  auto-load-worlds: false  # Manual loading for better control
+```
+
+## Troubleshooting Configuration
+
+### Common Issues
+
+<AccordionGroup>
+  <Accordion title="Configuration not loading">
+    **Symptoms:** Changes don't take effect
+    
+    **Solutions:**
+    - Check YAML syntax with online validator
+    - Restart server or use `/worlds reload`
+    - Check console for error messages
+    - Verify file permissions
+  </Accordion>
+  
+  <Accordion title="Invalid generator">
+    **Symptoms:** Worlds create with default generator
+    
+    **Solutions:**
+    - Check generator file exists in `generators/` folder
+    - Verify generator name matches file name
+    - Use `/worlds reload generators`
+    - Check generator file syntax
+  </Accordion>
+  
+  <Accordion title="Inventory separation not working">
+    **Symptoms:** Inventories shared when they shouldn't be
+    
+    **Solutions:**
+    - Verify `enable-inventory-separation: true`
+    - Check world group configuration
+    - Restart server after changes
+    - Test with different worlds
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="World Management"
+    icon="globe"
+    href="/lilworlds/world-management"
+  >
+    Learn advanced world management techniques
+  </Card>
+  <Card
+    title="Custom Generators"
+    icon="wand-magic-sparkles"
+    href="/lilworlds/custom-generators"
+  >
+    Create your own world generators
+  </Card>
+</CardGroup>

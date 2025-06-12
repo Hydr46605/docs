@@ -1,0 +1,676 @@
+---
+title: 'Admin Commands'
+description: 'Plugin administration and management commands'
+icon: 'crown'
+---
+
+## Overview
+
+The `/worlds` command provides administrative functions for managing the LilWorlds plugin itself, including configuration reloading, system maintenance, and global operations.
+
+<Info>
+**Admin Only:** Most `/worlds` commands require administrative permissions and should be used carefully.
+</Info>
+
+## Plugin Management
+
+### Reload Commands
+
+<CodeGroup>
+```bash Complete Reload
+# Reload all configurations and components
+/worlds reload
+/worlds rl
+
+# Reload everything including worlds
+/worlds reload all
+```
+
+```bash Specific Reloads
+# Reload main configuration
+/worlds reload config
+
+# Reload world configurations
+/worlds reload worlds
+
+# Reload custom generators
+/worlds reload generators
+
+# Reload message files
+/worlds reload messages
+```
+</CodeGroup>
+
+### Configuration Management
+
+```bash
+# View current configuration
+/worlds config show
+
+# Validate configuration files
+/worlds config validate
+
+# Reset configuration to defaults
+/worlds config reset --confirm
+
+# Export configuration
+/worlds config export backup.yml
+```
+
+## System Information
+
+### Plugin Status
+
+```bash
+# View plugin information
+/worlds info
+
+# Check system health
+/worlds health
+
+# Performance statistics
+/worlds performance
+/worlds perf
+```
+
+<Accordion title="Example Plugin Info Output">
+```
+=== LilWorlds Plugin Information ===
+
+Version: 1.2.0
+Status: ✅ Running
+Uptime: 2 days, 14 hours, 32 minutes
+
+Loaded Components:
+✅ World Manager (15 worlds)
+✅ Security Manager (Rate limiting active)
+✅ Generator Manager (3 custom generators)
+✅ Integration Manager (2 integrations)
+
+Memory Usage: 45.2 MB
+Active Operations: 0
+Rate Limits: 3 active cooldowns
+
+Integrations:
+✅ PlaceholderAPI v2.11.3
+✅ bStats v3.0.0
+```
+</Accordion>
+
+### World Statistics
+
+```bash
+# Global world statistics
+/worlds stats
+
+# Memory usage breakdown
+/worlds memory
+
+# Chunk loading statistics
+/worlds chunks
+
+# Player distribution
+/worlds players
+```
+
+## Maintenance Operations
+
+### Cleanup Commands
+
+```bash
+# Clean up orphaned world files
+/worlds cleanup --orphaned
+
+# Remove empty world folders
+/worlds cleanup --empty
+
+# Clean configuration entries
+/worlds cleanup --config
+
+# Interactive cleanup mode
+/worlds cleanup --interactive
+
+# Complete system cleanup
+/worlds cleanup --all --confirm
+```
+
+### Optimization
+
+```bash
+# Optimize world loading
+/worlds optimize --loading
+
+# Optimize memory usage
+/worlds optimize --memory
+
+# Optimize configuration files
+/worlds optimize --config
+
+# Full system optimization
+/worlds optimize --all
+```
+
+### Validation
+
+```bash
+# Validate all worlds
+/worlds validate
+
+# Validate specific world
+/worlds validate <world_name>
+
+# Validate configuration integrity
+/worlds validate --config
+
+# Validate generator definitions
+/worlds validate --generators
+```
+
+## Security Management
+
+### Rate Limiting
+
+```bash
+# View current rate limits
+/worlds security limits
+
+# Reset rate limits for all players
+/worlds security reset-limits
+
+# Reset rate limits for specific player
+/worlds security reset-limits <player>
+
+# View security log
+/worlds security log
+```
+
+### Access Control
+
+```bash
+# View permission assignments
+/worlds security permissions
+
+# Check player permissions
+/worlds security check <player>
+
+# View security events
+/worlds security events --recent 24h
+```
+
+## Backup and Recovery
+
+### System Backups
+
+```bash
+# Create full system backup
+/worlds backup --system
+
+# Backup all worlds
+/worlds backup --all-worlds
+
+# Backup configuration only
+/worlds backup --config
+
+# Scheduled backup
+/worlds backup --schedule daily
+```
+
+### Recovery Operations
+
+```bash
+# Restore from system backup
+/worlds restore --system <backup_name>
+
+# Restore configuration
+/worlds restore --config <backup_name>
+
+# Emergency recovery mode
+/worlds recovery --emergency
+```
+
+## Integration Management
+
+### PlaceholderAPI
+
+```bash
+# Reload PlaceholderAPI integration
+/worlds integration reload placeholderapi
+
+# Test placeholder expansion
+/worlds integration test %lilworlds_current_world%
+
+# View available placeholders
+/worlds integration placeholders
+```
+
+### bStats
+
+```bash
+# View metrics status
+/worlds integration bstats status
+
+# Toggle metrics collection
+/worlds integration bstats toggle
+
+# Force metrics update
+/worlds integration bstats update
+```
+
+## Generator Management
+
+### Custom Generators
+
+```bash
+# List all generators
+/worlds generators list
+
+# Reload generator definitions
+/worlds generators reload
+
+# Validate generator configuration
+/worlds generators validate <generator_name>
+
+# Test generator
+/worlds generators test <generator_name>
+```
+
+### Generator Operations
+
+```bash
+# Create new generator template
+/worlds generators create <name> --template flat
+
+# Import generator from file
+/worlds generators import <file_path>
+
+# Export generator definition
+/worlds generators export <name> <file_path>
+
+# Remove generator
+/worlds generators remove <name> --confirm
+```
+
+## Monitoring and Logging
+
+### Log Management
+
+```bash
+# View recent logs
+/worlds logs --recent 1h
+
+# Filter logs by type
+/worlds logs --filter error
+/worlds logs --filter security
+/worlds logs --filter performance
+
+# Export logs
+/worlds logs export --since yesterday
+```
+
+### Real-time Monitoring
+
+```bash
+# Start monitoring mode
+/worlds monitor --start
+
+# Stop monitoring
+/worlds monitor --stop
+
+# Monitor specific metrics
+/worlds monitor --memory
+/worlds monitor --performance
+/worlds monitor --security
+```
+
+## Database Operations
+
+### Data Management
+
+```bash
+# View database statistics
+/worlds database stats
+
+# Optimize database
+/worlds database optimize
+
+# Backup database
+/worlds database backup
+
+# Repair database
+/worlds database repair --confirm
+```
+
+### Migration
+
+```bash
+# Migrate from other plugins
+/worlds migrate --from multiverse
+
+# Export data for migration
+/worlds migrate --export
+
+# Import data from backup
+/worlds migrate --import <backup_file>
+```
+
+## Advanced Administration
+
+### Debug Mode
+
+```bash
+# Enable debug logging
+/worlds debug enable
+
+# Disable debug logging
+/worlds debug disable
+
+# View debug information
+/worlds debug info
+
+# Debug specific component
+/worlds debug world-manager
+/worlds debug security-manager
+```
+
+### Emergency Commands
+
+```bash
+# Emergency stop (unload all worlds)
+/worlds emergency stop
+
+# Emergency reload
+/worlds emergency reload
+
+# Safe mode (minimal functionality)
+/worlds emergency safe-mode
+
+# Force cleanup
+/worlds emergency cleanup --force
+```
+
+### System Diagnostics
+
+```bash
+# Run full diagnostic
+/worlds diagnostic --full
+
+# Check system compatibility
+/worlds diagnostic --compatibility
+
+# Performance analysis
+/worlds diagnostic --performance
+
+# Generate diagnostic report
+/worlds diagnostic --report
+```
+
+## Configuration Commands
+
+### Global Settings
+
+```bash
+# Enable/disable features globally
+/worlds config enable inventory-separation
+/worlds config disable auto-load-worlds
+
+# Set global limits
+/worlds config set max-worlds-per-player 15
+/worlds config set rate-limit-window 3600
+
+# View all settings
+/worlds config list --all
+```
+
+### Feature Toggles
+
+```bash
+# Toggle async operations
+/worlds feature toggle async-operations
+
+# Enable experimental features
+/worlds feature enable experimental
+
+# List available features
+/worlds feature list
+```
+
+## Scheduled Operations
+
+### Automation
+
+```bash
+# Schedule automatic backups
+/worlds schedule backup daily 03:00
+
+# Schedule cleanup operations
+/worlds schedule cleanup weekly sunday 02:00
+
+# Schedule optimization
+/worlds schedule optimize monthly 1st 01:00
+
+# View scheduled tasks
+/worlds schedule list
+```
+
+### Task Management
+
+```bash
+# Cancel scheduled task
+/worlds schedule cancel <task_id>
+
+# Modify schedule
+/worlds schedule modify <task_id> --time 04:00
+
+# Run task immediately
+/worlds schedule run <task_id> --now
+```
+
+## API and Development
+
+### Developer Tools
+
+```bash
+# View API information
+/worlds api info
+
+# Test API endpoints
+/worlds api test <endpoint>
+
+# Generate API documentation
+/worlds api docs --export
+
+# View plugin hooks
+/worlds api hooks
+```
+
+### Plugin Integration
+
+```bash
+# List integrated plugins
+/worlds integrations list
+
+# Test integration
+/worlds integrations test <plugin_name>
+
+# Reload integration
+/worlds integrations reload <plugin_name>
+```
+
+## Permissions for Admin Commands
+
+### Core Administration
+
+```yaml
+# Basic admin commands
+lilworlds.admin.reload         # Reload configurations
+lilworlds.admin.info           # View plugin information
+lilworlds.admin.stats          # View statistics
+
+# System management
+lilworlds.admin.cleanup        # Cleanup operations
+lilworlds.admin.optimize       # Optimization commands
+lilworlds.admin.validate       # Validation operations
+```
+
+### Advanced Administration
+
+```yaml
+# Security management
+lilworlds.admin.security       # Security commands
+lilworlds.admin.security.reset # Reset rate limits
+
+# Backup and recovery
+lilworlds.admin.backup         # Backup operations
+lilworlds.admin.restore        # Restore operations
+lilworlds.admin.emergency      # Emergency commands
+
+# Development
+lilworlds.admin.debug          # Debug commands
+lilworlds.admin.api            # API access
+lilworlds.admin.diagnostic     # Diagnostic tools
+```
+
+## Best Practices
+
+### Regular Maintenance
+
+<Tip>
+**Recommended Schedule:**
+- **Daily:** Check system health and performance
+- **Weekly:** Run cleanup operations and validate worlds
+- **Monthly:** Full system backup and optimization
+- **Quarterly:** Review security logs and update configurations
+</Tip>
+
+### Monitoring Checklist
+
+```bash
+# Daily health check
+/worlds health
+/worlds performance
+/worlds security events --recent 24h
+
+# Weekly maintenance
+/worlds cleanup --orphaned
+/worlds validate
+/worlds optimize --memory
+
+# Monthly tasks
+/worlds backup --system
+/worlds diagnostic --full
+/worlds logs export --archive
+```
+
+### Emergency Procedures
+
+<AccordionGroup>
+  <Accordion title="Server Performance Issues">
+    ```bash
+    # Quick performance check
+    /worlds performance
+    /worlds memory
+    
+    # Emergency optimization
+    /worlds optimize --memory --force
+    /worlds cleanup --empty
+    
+    # If severe, enable safe mode
+    /worlds emergency safe-mode
+    ```
+  </Accordion>
+  
+  <Accordion title="Configuration Corruption">
+    ```bash
+    # Validate configuration
+    /worlds config validate
+    
+    # Restore from backup
+    /worlds restore --config latest
+    
+    # Reset to defaults if needed
+    /worlds config reset --confirm
+    ```
+  </Accordion>
+  
+  <Accordion title="World Loading Issues">
+    ```bash
+    # Validate all worlds
+    /worlds validate
+    
+    # Emergency reload
+    /worlds emergency reload
+    
+    # Check for corruption
+    /worlds diagnostic --worlds
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Troubleshooting
+
+### Common Issues
+
+<AccordionGroup>
+  <Accordion title="Reload Fails">
+    **Symptoms:** Configuration reload commands fail
+    
+    **Solutions:**
+    - Check configuration file syntax
+    - Verify file permissions
+    - Use `/worlds config validate` first
+    - Check console for specific errors
+  </Accordion>
+  
+  <Accordion title="Performance Degradation">
+    **Symptoms:** Server lag or slow responses
+    
+    **Solutions:**
+    - Run `/worlds performance` to identify issues
+    - Use `/worlds optimize --memory`
+    - Check for memory leaks with `/worlds memory`
+    - Consider unloading unused worlds
+  </Accordion>
+  
+  <Accordion title="Integration Problems">
+    **Symptoms:** Other plugins not working with LilWorlds
+    
+    **Solutions:**
+    - Check `/worlds integrations list`
+    - Reload specific integration
+    - Verify plugin compatibility
+    - Check for version conflicts
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Permissions Guide"
+    icon="key"
+    href="/lilworlds/commands/permissions"
+  >
+    Complete permissions setup and management
+  </Card>
+  <Card
+    title="Security Features"
+    icon="shield"
+    href="/lilworlds/security-features"
+  >
+    Advanced security configuration and monitoring
+  </Card>
+  <Card
+    title="Performance Guide"
+    icon="gauge-high"
+    href="/lilworlds/performance"
+  >
+    Optimize LilWorlds for maximum performance
+  </Card>
+  <Card
+    title="API Documentation"
+    icon="code"
+    href="/lilworlds/api/overview"
+  >
+    Developer API reference and integration
+  </Card>
+</CardGroup>

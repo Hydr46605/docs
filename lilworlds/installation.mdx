@@ -1,0 +1,260 @@
+---
+title: 'Installation'
+description: 'How to install and set up LilWorlds on your Minecraft server'
+icon: 'download'
+---
+
+## Requirements
+
+Before installing LilWorlds, ensure your server meets these requirements:
+
+<CardGroup cols={2}>
+  <Card title="Minecraft Version" icon="cube">
+    **1.16 - 1.21.5**
+    
+    Supports all modern Minecraft versions
+  </Card>
+  <Card title="Server Software" icon="server">
+    **Spigot, Paper, or Purpur**
+    
+    Any Spigot-based server software
+  </Card>
+  <Card title="Java Version" icon="coffee">
+    **Java 8 or higher**
+    
+    Java 17+ recommended for best performance
+  </Card>
+  <Card title="Memory" icon="memory">
+    **Minimum 2GB RAM**
+    
+    More RAM recommended for multiple worlds
+  </Card>
+</CardGroup>
+
+## Download
+
+### Latest Release
+
+Download the latest version of LilWorlds from our GitHub releases page:
+
+<Card
+  title="Download LilWorlds v1.2.0"
+  icon="download"
+  href="https://github.com/CarmineArcangelo/LilWorlds/releases/latest"
+>
+  Get the latest stable release with all features
+</Card>
+
+### Development Builds
+
+<Warning>
+Development builds may contain bugs and are not recommended for production servers.
+</Warning>
+
+You can find development builds in the GitHub Actions artifacts or build from source.
+
+## Installation Steps
+
+### 1. Download the Plugin
+
+1. Go to the [releases page](https://github.com/CarmineArcangelo/LilWorlds/releases)
+2. Download `lilworlds-1.2.0.jar` from the latest release
+3. Verify the file size is approximately 130KB
+
+### 2. Install the Plugin
+
+1. **Stop your server** if it's currently running
+2. Place `lilworlds-1.2.0.jar` in your server's `plugins/` folder
+3. **Start your server**
+
+```bash
+# Example server structure
+server/
+├── plugins/
+│   ├── lilworlds-1.2.0.jar  ← Place the JAR here
+│   └── other-plugins.jar
+├── worlds/
+├── server.jar
+└── start.sh
+```
+
+### 3. Verify Installation
+
+After starting your server, check that LilWorlds loaded successfully:
+
+1. Look for LilWorlds startup messages in your console
+2. Run `/plugins` to see if LilWorlds is listed
+3. Try running `/world` to test the command
+
+<Accordion title="Expected Console Output">
+```
+[INFO] [LilWorlds] Starting LilWorlds v1.2.0...
+[INFO] [LilWorlds] Loading configuration files...
+[INFO] [LilWorlds] Initializing world manager...
+[INFO] [LilWorlds] Registering commands and listeners...
+[INFO] [LilWorlds] Loading custom generators...
+[INFO] [LilWorlds] Starting security manager...
+[INFO] [LilWorlds] LilWorlds v1.2.0 enabled successfully!
+[INFO] [LilWorlds] Loaded 3 worlds, 2 generators, 1 integrations
+```
+</Accordion>
+
+## Optional Dependencies
+
+LilWorlds works great on its own, but you can enhance it with these optional plugins:
+
+### PlaceholderAPI
+
+Adds placeholder support for other plugins to display LilWorlds information.
+
+<Steps>
+  <Step title="Install PlaceholderAPI">
+    Download from [SpigotMC](https://www.spigotmc.org/resources/placeholderapi.6245/)
+  </Step>
+  <Step title="Restart Server">
+    LilWorlds will automatically detect and integrate with PlaceholderAPI
+  </Step>
+  <Step title="Use Placeholders">
+    Use placeholders like `%lilworlds_current_world%` in other plugins
+  </Step>
+</Steps>
+
+### Available Placeholders
+
+| Placeholder | Description |
+|-------------|-------------|
+| `%lilworlds_current_world%` | Player's current world name |
+| `%lilworlds_world_count%` | Total number of loaded worlds |
+| `%lilworlds_world_players%` | Players in current world |
+
+## First-Time Setup
+
+### 1. Check Default Configuration
+
+After installation, LilWorlds creates several configuration files:
+
+```
+plugins/LilWorlds/
+├── config.yml          # Main configuration
+├── worlds.yml           # World-specific settings
+├── messages.yml         # Customizable messages
+└── generators/          # Custom generator definitions
+    └── VoidGenerator.yml
+```
+
+### 2. Configure Basic Settings
+
+Edit `config.yml` to customize basic settings:
+
+```yaml
+# Basic configuration
+settings:
+  auto-load-worlds: true
+  default-world-type: NORMAL
+  enable-inventory-separation: true
+  
+# Security settings
+security:
+  enable-rate-limiting: true
+  max-worlds-per-player: 10
+  
+# Performance settings
+performance:
+  async-world-creation: true
+  chunk-loading-optimization: true
+```
+
+### 3. Set Permissions
+
+Configure permissions for your players and staff:
+
+```yaml
+# Example permissions.yml
+groups:
+  default:
+    permissions:
+    - lilworlds.world.info
+    - lilworlds.world.list
+    
+  moderator:
+    permissions:
+    - lilworlds.world.*
+    
+  admin:
+    permissions:
+    - lilworlds.*
+```
+
+## Troubleshooting
+
+### Common Issues
+
+<AccordionGroup>
+  <Accordion title="Plugin not loading">
+    **Symptoms:** LilWorlds doesn't appear in `/plugins` list
+    
+    **Solutions:**
+    - Check Java version (requires Java 8+)
+    - Verify server software compatibility
+    - Check console for error messages
+    - Ensure JAR file isn't corrupted
+  </Accordion>
+  
+  <Accordion title="Commands not working">
+    **Symptoms:** `/world` command shows "Unknown command"
+    
+    **Solutions:**
+    - Verify plugin loaded successfully
+    - Check permissions configuration
+    - Restart server after installation
+    - Check for command conflicts with other plugins
+  </Accordion>
+  
+  <Accordion title="Worlds not loading">
+    **Symptoms:** Existing worlds don't appear in `/world list`
+    
+    **Solutions:**
+    - Check `worlds.yml` configuration
+    - Verify world folders exist in server directory
+    - Enable `auto-load-worlds` in config
+    - Import worlds manually with `/world import`
+  </Accordion>
+</AccordionGroup>
+
+### Getting Help
+
+If you encounter issues not covered here:
+
+1. **Check the console** for error messages
+2. **Review configuration files** for syntax errors
+3. **Search existing issues** on GitHub
+4. **Create a new issue** with detailed information
+
+<Card
+  title="Report Issues"
+  icon="bug"
+  href="https://github.com/CarmineArcangelo/LilWorlds/issues"
+>
+  Found a bug? Report it on our GitHub issues page
+</Card>
+
+## Next Steps
+
+Now that LilWorlds is installed, you're ready to start managing worlds:
+
+<CardGroup cols={2}>
+  <Card
+    title="Quick Start Guide"
+    icon="play"
+    href="/lilworlds/quick-start"
+  >
+    Learn the basic commands and workflows
+  </Card>
+  <Card
+    title="Configuration"
+    icon="gear"
+    href="/lilworlds/configuration"
+  >
+    Customize LilWorlds for your server
+  </Card>
+</CardGroup>
