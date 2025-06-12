@@ -10,27 +10,23 @@
   "favicon": "/favicon.svg",
   "navigation": [
     {
-      "group": "Getting Started",
+      "group": "Overview",
       "pages": [
-        "index",
-        "installation",
-        "quick-start",
-        "configuration"
+        "index"
       ]
     },
     {
-      "group": "World Management",
+      "group": "LilWorlds",
       "pages": [
-        "world-management",
-        "world-deletion",
-        "custom-generators"
-      ]
-    },
-    {
-      "group": "Commands",
-      "pages": [
-        "commands/world-commands",
-        "commands/admin-commands"
+        "lilworlds/introduction",
+        "lilworlds/installation",
+        "lilworlds/quick-start",
+        "lilworlds/configuration",
+        "lilworlds/world-management",
+        "lilworlds/world-deletion",
+        "lilworlds/custom-generators",
+        "lilworlds/commands/world-commands",
+        "lilworlds/commands/admin-commands"
       ]
     }
   ],

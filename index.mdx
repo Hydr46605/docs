@@ -1,179 +1,152 @@
 ---
-title: 'LilWorlds Documentation'
-description: 'Comprehensive guide for the LilWorlds Minecraft plugin'
+title: 'Hydr4 Documentation'
+description: 'Documentation hub for all Hydr4 Minecraft plugins'
 ---
 
 <img
   className="block dark:hidden"
   src="/images/hero-light.png"
-  alt="LilWorlds Documentation"
+  alt="Hydr4 Documentation"
 />
 <img
   className="hidden dark:block"
   src="/images/hero-dark.png"
-  alt="LilWorlds Documentation"
+  alt="Hydr4 Documentation"
 />
 
-# Welcome to LilWorlds
+# Welcome to Hydr4 Documentation
 
-**LilWorlds** is a performant, modular world management plugin for Minecraft servers. Designed as a modern alternative to Multiverse-Core, LilWorlds focuses on performance, organization, and modularity.
+**Hydr4** develops high-performance, modular Minecraft plugins focused on server optimization, advanced features, and developer-friendly architecture. Our plugins are designed to be lightweight, efficient, and highly configurable.
+
+## Our Plugins
 
 <CardGroup cols={2}>
   <Card
-    title="🚀 Get Started"
-    icon="play"
-    href="/installation"
-  >
-    Install LilWorlds and create your first world in minutes
-  </Card>
-  <Card
-    title="📖 Quick Start Guide"
-    icon="book-open"
-    href="/quick-start"
-  >
-    Learn the essential commands and workflows
-  </Card>
-  <Card
-    title="⚙️ Configuration"
-    icon="gear"
-    href="/configuration"
-  >
-    Customize LilWorlds for your server's needs
-  </Card>
-  <Card
-    title="🌍 World Management"
+    title="🌍 LilWorlds"
     icon="globe"
-    href="/world-management"
+    href="/lilworlds/introduction"
   >
-    Master advanced world management techniques
+    **World Management Plugin**
+    
+    Advanced world management with custom generators, inventory separation, and performance optimization. Modern alternative to Multiverse-Core.
+  </Card>
+  <Card
+    title="🔧 LilChunks"
+    icon="grid"
+    href="/lilchunks/introduction"
+  >
+    **Chunk Management Plugin**
+    
+    Advanced chunk loading, optimization, and management system for improved server performance.
+    
+    *Coming Soon*
   </Card>
 </CardGroup>
 
-## Key Features
+## Why Choose Hydr4 Plugins?
 
 <AccordionGroup>
-  <Accordion title="🌍 Advanced World Management" icon="globe">
-    - Create, clone, import, and delete worlds with ease
-    - Support for all Minecraft dimensions (Overworld, Nether, End)
-    - Enhanced world deletion with comprehensive configuration purging
-    - Efficient world loading and unloading with memory optimization
+  <Accordion title="⚡ Performance First" icon="bolt">
+    - Asynchronous operations to prevent server lag
+    - Memory optimization and efficient resource management
+    - Minimal server impact with smart algorithms
+    - Designed for high-performance servers
   </Accordion>
   
-  <Accordion title="⚡ Performance Optimized" icon="bolt">
-    - Asynchronous world operations to prevent server lag
-    - Rate limiting and security features
-    - Efficient memory management and resource optimization
-    - Minimal server impact with smart loading strategies
+  <Accordion title="🔧 Modular Architecture" icon="puzzle-piece">
+    - Clean, organized codebase with separation of concerns
+    - Extensible plugin architecture
+    - Easy integration with other plugins
+    - Developer-friendly APIs and events
   </Accordion>
   
-  <Accordion title="🔧 Custom Generators" icon="wand-magic-sparkles">
-    - Built-in VoidGenerator for creative and minigame worlds
-    - YAML-based custom generator system
-    - Support for FLAT, VOID, NORMAL, and AMPLIFIED generation
-    - No Java coding required for custom world types
-  </Accordion>
-  
-  <Accordion title="🎒 Inventory Separation" icon="backpack">
-    - Separate inventories per world or world groups
-    - Configurable inventory management system
-    - Seamless player experience across worlds
-    - Support for ender chests, experience, and gamemode separation
-  </Accordion>
-  
-  <Accordion title="🛡️ Security Features" icon="shield">
+  <Accordion title="🛡️ Security & Reliability" icon="shield">
     - Input validation and sanitization
-    - Rate limiting for operations to prevent abuse
-    - Permission-based access control
-    - Comprehensive security logging and monitoring
+    - Rate limiting and abuse prevention
+    - Comprehensive error handling
+    - Extensive logging and monitoring
+  </Accordion>
+  
+  <Accordion title="⚙️ Highly Configurable" icon="gear">
+    - YAML-based configuration systems
+    - Granular control over all features
+    - Hot-reloading of configurations
+    - Customizable messages and behaviors
+  </Accordion>
+  
+  <Accordion title="📚 Well Documented" icon="book">
+    - Comprehensive documentation for all features
+    - Step-by-step guides and tutorials
+    - API documentation for developers
+    - Community support and examples
   </Accordion>
 </AccordionGroup>
 
-## Version Information
+## Plugin Compatibility
 
 <Info>
-**Current Version:** 1.2.0
-
-**Minecraft Compatibility:** 1.16 - 1.21.5
+**Minecraft Versions:** 1.16 - 1.21.5
 
 **Server Software:** Spigot, Paper, Purpur (any Spigot-based)
 
-**Java Version:** 8+ (Java 17+ recommended)
+**Java Version:** 8+ (Java 17+ recommended for optimal performance)
+
+**Dependencies:** None required, optional integrations available
 </Info>
 
-## Quick Command Overview
+## Quick Start
 
-LilWorlds provides intuitive commands for all world management tasks:
+Get started with any of our plugins in minutes:
 
-### World Management Commands (`/world` or `/w`)
+### 1. Download & Install
+Download the latest version from GitHub releases and place in your `plugins/` folder.
 
-```bash
-# Create worlds
-/world create myworld                    # Basic world creation
-/world create void_world NORMAL -g VoidGenerator  # With custom generator
+### 2. Configure
+Each plugin comes with sensible defaults but can be fully customized via YAML configuration files.
 
-# Manage worlds
-/world list                             # List all worlds
-/world info myworld                     # Detailed world information
-/world load myworld                     # Load a world
-/world unload myworld                   # Unload a world
+### 3. Use Commands
+All plugins feature intuitive command systems with tab completion and comprehensive help.
 
-# Clone and import
-/world clone source target              # Clone existing world
-/world import existing_world            # Import external world
+### 4. Explore Features
+Check out the detailed documentation for each plugin to unlock advanced features.
 
-# Safe deletion with configuration purging
-/world remove myworld                   # Delete with confirmation
-```
-
-### Plugin Administration (`/worlds`)
-
-```bash
-/worlds reload                          # Reload all configurations
-/worlds reload generators               # Reload custom generators
-/worlds cleanup --orphaned              # Clean up orphaned files
-```
-
-## What's New in v1.2
+## Latest Updates
 
 <CardGroup cols={2}>
-  <Card title="Enhanced World Deletion" icon="trash">
-    **Configuration Purging**
+  <Card title="LilWorlds v1.2.0" icon="globe">
+    **Enhanced World Management**
     
-    Complete removal of world references from all config files
+    - Configuration purging on world deletion
+    - Custom YAML-based generators
+    - Improved security and performance
+    - Advanced inventory separation
   </Card>
-  <Card title="Improved Security" icon="shield">
-    **Advanced Rate Limiting**
+  <Card title="LilChunks" icon="grid">
+    **Coming Soon**
     
-    Enhanced security features and operation monitoring
-  </Card>
-  <Card title="Better Performance" icon="gauge-high">
-    **Memory Optimization**
-    
-    Improved memory management and async operations
-  </Card>
-  <Card title="Custom Generators" icon="wand-magic-sparkles">
-    **YAML-Based System**
-    
-    Create custom world generators without Java coding
+    - Advanced chunk loading optimization
+    - Memory-efficient chunk management
+    - Performance monitoring tools
+    - Configurable loading strategies
   </Card>
 </CardGroup>
 
-## Getting Help
+## Getting Help & Support
 
 <CardGroup cols={2}>
   <Card
-    title="📥 Download"
+    title="📥 Downloads"
     icon="download"
-    href="https://github.com/CarmineArcangelo/LilWorlds/releases"
+    href="https://github.com/Hydr46605"
   >
-    Get the latest version from GitHub releases
+    Get the latest versions from our GitHub repositories
   </Card>
   <Card
     title="🐛 Report Issues"
     icon="bug"
     href="https://github.com/CarmineArcangelo/LilWorlds/issues"
   >
-    Found a bug? Report it on our GitHub issues page
+    Found a bug? Report it on the respective plugin's GitHub issues
   </Card>
   <Card
     title="💬 Community"
@@ -183,16 +156,24 @@ LilWorlds provides intuitive commands for all world management tasks:
     Join discussions and get community support
   </Card>
   <Card
-    title="📚 Full Documentation"
+    title="📚 Documentation"
     icon="book"
-    href="/installation"
+    href="/lilworlds/introduction"
   >
-    Explore the complete documentation
+    Explore comprehensive documentation for each plugin
   </Card>
 </CardGroup>
+
+## Development & Contributing
+
+We welcome contributions to all our plugins! Each plugin repository contains:
+- **Source Code** - Clean, well-documented Java code
+- **Build Instructions** - Maven-based build system
+- **Contributing Guidelines** - How to contribute effectively
+- **Issue Templates** - Structured bug reports and feature requests
 
 ---
 
 <Note>
-**Ready to get started?** Head over to the [Installation Guide](/installation) to set up LilWorlds on your server, or jump straight to the [Quick Start Guide](/quick-start) if you're ready to start managing worlds!
+**Ready to get started?** Choose a plugin above to explore its documentation, or visit our [GitHub organization](https://github.com/Hydr46605) to see all available plugins and their source code.
 </Note>
